@@ -30,8 +30,9 @@ Git Flow
 * 기타     : "[Etc] <내용>"
 * CI/CD 수정 : "[DevOps] <내용>"
 
-# Tech Blog
+# 📒 Tech Blog
 해당 프로젝트를 진행하면서 각종 생각과 내용을 기록한 블로그 시리즈입니다.
+
 [✅ Catch Bug Blog](https://velog.io/@jkijki12/series/%EC%9D%B5%EB%AA%85-%EA%B2%8C%EC%8B%9C%ED%8C%90)
 
 

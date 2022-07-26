@@ -1,0 +1,27 @@
+# default application setting
+# encoding properties
+server:
+  servlet:
+    encoding:
+      charset: UTF-8
+      force: true
+
+# spring properties
+spring:
+  servlet:
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 50MB
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/catch_bug?serverTimezone=UTC&characterEncoding=UTF-8
+    username: user01
+    password: user01
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true

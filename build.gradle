@@ -1,0 +1,87 @@
+plugins {
+	id 'org.springframework.boot' version '2.7.2'
+	id 'io.spring.dependency-management' version '1.0.12.RELEASE'
+	id 'java'
+
+	//jacoco
+	id 'jacoco'
+}
+
+group = 'com.catch-bug'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '11'
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+//jacoco 버전 명시
+jacoco {
+	toolVersion = '0.8.6'
+}
+
+jar {
+	enabled = false
+}
+
+jacocoTestReport {
+	reports {
+		html.enabled true
+		csv.enabled true
+		xml.enabled false
+	}
+	finalizedBy 'jacocoTestCoverageVerification'
+}
+
+
+repositories {
+	mavenCentral()
+}
+
+jacocoTestCoverageVerification {
+	violationRules {
+		rule {
+			// 클래스 단위로 테스트 커버리지 측정
+			element = 'CLASS'
+
+			// 분기 커버리지 100%
+			limit {
+				counter = 'BRANCH'
+				value = 'COVEREDRATIO'
+				minimum = 0
+			}
+
+			// 문장 커버리지 80%
+			limit {
+				counter = 'LINE'
+				value = 'COVEREDRATIO'
+				minimum = 0
+			}
+
+			// 스프링 부트 메인 메소드 제외
+			excludes = ['com.catchbug.server.ServerApplication']
+		}
+	}
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	compileOnly 'org.projectlombok:lombok'
+	runtimeOnly 'mysql:mysql-connector-java'
+	annotationProcessor 'org.projectlombok:lombok'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'org.springframework.security:spring-security-test'
+	//test - lombok
+	testCompileOnly 'org.projectlombok:lombok:1.18.12'
+	testAnnotationProcessor 'org.projectlombok:lombok:1.18.12'
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+	finalizedBy 'jacocoTestReport'
+}

@@ -82,14 +82,8 @@ jobs:
             docker stop app
             docker rm app
             docker rmi ${{ secrets.DOCKER_ID }}/${{ secrets.DOCKER_REPO }}:latest
-            docker network create -d bridge test
             
-            docker stop mysqlDB
-            docker rm mysqlDB
-            docker rmi mysqlDB
-            docker run -d --network test --network-alias mysql -v  /build/DB/mysql:/var/lib/mysql --name mysqlDB -e MYSQL_DATABASE=anonymous_board -e MYSQL_USER=user01 -e MYSQL_PASSWORD=user01 -e MYSQL_ROOT_PASSWORD=password -p 3306:3306 -v /home/ubuntu/docker_volume/mysql_volume:/var/lib/mysql  mysql
-
-            docker run -d --rm --name app --network test -p 8080:8080 ${{ secrets.DOCKER_ID }}/cicd:latest
+            docker run -d --rm --name app --network catch_bug_net -p 8080:8080 ${{ secrets.DOCKER_ID }}/${{ secrets.DOCKER_REPO }}:latest
   slack: 
     runs-on: ubuntu-latest # 실행 환경 지정 
     steps:

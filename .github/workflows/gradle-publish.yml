@@ -1,12 +1,14 @@
 on:
   push: # feature/*와 develop 브랜치에서 push가 일어났을 때 github action 동작
-  #  branches:
-     # - 'master'
-     # - 'develop'
+    branches:
+      #- 'main'
+      - 'develop'
+      - 'feature/*'
   pull_request: # feature/*와 develop 브랜치에서 PR이 일어났을 때 github action 동작
-   # branches:
-     # - 'master'
-     # - 'develop'
+    branches:
+      #- 'main'
+      - 'develop'
+      - 'feature/*'
 
 # 참고사항
 # push가 일어난 브랜치에 PR이 존재하면, push에 대한 이벤트와 PR에 대한 이벤트 모두 발생합니다.
@@ -52,15 +54,19 @@ jobs:
         with:
           files: build/test-results/**/*.xml
           
-          
+  deploy: 
+   if: github.base_ref == 'main'
+   runs-on: ubuntu-latest # 실행 환경 지정
+   needs: build
+   steps:
       # 배포 Job
       # 도커허브 push
       - name: Docker build
         run: |
           docker login -u ${{ secrets.DOCKER_ID }} -p ${{ secrets.DOCKER_PASSWORD }}
           docker build -t app .
-          docker tag app ${{ secrets.DOCKER_REPO }}/cicd
-          docker push ${{ secrets.DOCKER_REPO }}/cicd
+          docker tag app ${{ secrets.DOCKER_ID }}/${{ secrets.DOCKER_REPO }}
+          docker push ${{ secrets.DOCKER_ID }}/&{{ secrets.DOCKER_REPO }}
       # ec2 접속 및 도커 pull
       # 도커 실행
       - name: Deploy
@@ -71,11 +77,11 @@ jobs:
           key: ${{ secrets.AWS_SSH_KEY }} # pem 키--
           # 도커 작업
           script: |
-            docker pull ${{ secrets.DOCKER_ID }}/cicd:latest
-            docker tag app ${{ secrets.DOCKER_ID }}/cicd:latest
+            docker pull ${{ secrets.DOCKER_ID }}/${{ secrets.DOCKER_REPO }}:latest
+            docker tag app ${{ secrets.DOCKER_ID }}/${{ secrets.DOCKER_REPO }}:latest
             docker stop app
             docker rm app
-            docker rmi ${{ secrets.DOCKER_ID }}/cicd:latest
+            docker rmi ${{ secrets.DOCKER_ID }}/${{ secrets.DOCKER_REPO }}:latest
             docker network create -d bridge test
             
             docker stop mysqlDB
@@ -84,7 +90,9 @@ jobs:
             docker run -d --network test --network-alias mysql -v  /build/DB/mysql:/var/lib/mysql --name mysqlDB -e MYSQL_DATABASE=anonymous_board -e MYSQL_USER=user01 -e MYSQL_PASSWORD=user01 -e MYSQL_ROOT_PASSWORD=password -p 3306:3306 mysql
 
             docker run -d --rm --name app --network test -p 8080:8080 ${{ secrets.DOCKER_ID }}/cicd:latest
-            
+  slack: 
+    runs-on: ubuntu-latest # 실행 환경 지정 
+    steps:
       - name: Slack
         uses: 8398a7/action-slack@v3
         with:

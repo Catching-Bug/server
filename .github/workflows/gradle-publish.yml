@@ -1,0 +1,99 @@
+on:
+  push: # feature/*와 develop 브랜치에서 push가 일어났을 때 github action 동작
+  #  branches:
+     # - 'master'
+     # - 'develop'
+  pull_request: # feature/*와 develop 브랜치에서 PR이 일어났을 때 github action 동작
+   # branches:
+     # - 'master'
+     # - 'develop'
+
+# 참고사항
+# push가 일어난 브랜치에 PR이 존재하면, push에 대한 이벤트와 PR에 대한 이벤트 모두 발생합니다.
+
+jobs:
+  build: 
+    runs-on: ubuntu-latest # 실행 환경 지정
+
+    steps:
+      - uses: actions/checkout@v2 # github action 버전 지정(major version)
+
+      - name: Set up JDK 11 # JAVA 버전 지정
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11 
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+      
+       ## create application-database.yaml
+      - name: make application-database.yaml
+        run: |
+          # create application-database.yaml
+           cd ./src/main/resources
+
+          # application-database.yaml 파일 생성
+           touch ./application-database.yaml
+
+          # GitHub-Actions 에서 설정한 값을 application-database.yaml 파일에 쓰기
+          echo "${{ secrets.DATABASE }}" >> ./application-database.yaml
+        shell: bash
+      
+      
+      - name: Build with Gradle # 실제 application build(-x 옵션을 통해 test는 제외)
+        run: ./gradlew build -x test
+
+      - name: Test with Gradle # test application build
+        run: ./gradlew test
+
+      - name: Publish Unit Test Results # test 후 result를 보기 위해 추가
+        uses: EnricoMi/publish-unit-test-result-action@v1
+        if: ${{ always() }} # test가 실패해도 report를 남기기 위해 설정
+        with:
+          files: build/test-results/**/*.xml
+          
+          
+      # 배포 Job
+      # 도커허브 push
+      - name: Docker build
+        run: |
+          docker login -u ${{ secrets.DOCKER_ID }} -p ${{ secrets.DOCKER_PASSWORD }}
+          docker build -t app .
+          docker tag app ${{ secrets.DOCKER_REPO }}/cicd
+          docker push ${{ secrets.DOCKER_REPO }}/cicd
+      # ec2 접속 및 도커 pull
+      # 도커 실행
+      - name: Deploy
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.AWS_HOST }} # EC2 인스턴스 퍼블릭 DNS
+          username: ubuntu
+          key: ${{ secrets.AWS_SSH_KEY }} # pem 키--
+          # 도커 작업
+          script: |
+            docker pull ${{ secrets.DOCKER_ID }}/cicd:latest
+            docker tag app ${{ secrets.DOCKER_ID }}/cicd:latest
+            docker stop app
+            docker rm app
+            docker rmi ${{ secrets.DOCKER_ID }}/cicd:latest
+            docker network create -d bridge test
+            
+            docker stop mysqlDB
+            docker rm mysqlDB
+            docker rmi mysqlDB
+            docker run -d --network test --network-alias mysql -v  /build/DB/mysql:/var/lib/mysql --name mysqlDB -e MYSQL_DATABASE=anonymous_board -e MYSQL_USER=user01 -e MYSQL_PASSWORD=user01 -e MYSQL_ROOT_PASSWORD=password -p 3306:3306 mysql
+
+            docker run -d --rm --name app --network test -p 8080:8080 ${{ secrets.DOCKER_ID }}/cicd:latest
+            
+      - name: Slack
+        uses: 8398a7/action-slack@v3
+        with:
+          status: ${{ job.status }}
+          author_name: youngho Cha
+          fields: repo,commit,message,author
+          mention: here
+          if_mention: failure,cancelled
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        if: always()
+          

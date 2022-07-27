@@ -87,7 +87,7 @@ jobs:
             docker stop mysqlDB
             docker rm mysqlDB
             docker rmi mysqlDB
-            docker run -d --network test --network-alias mysql -v  /build/DB/mysql:/var/lib/mysql --name mysqlDB -e MYSQL_DATABASE=anonymous_board -e MYSQL_USER=user01 -e MYSQL_PASSWORD=user01 -e MYSQL_ROOT_PASSWORD=password -p 3306:3306 mysql
+            docker run -d --network test --network-alias mysql -v  /build/DB/mysql:/var/lib/mysql --name mysqlDB -e MYSQL_DATABASE=anonymous_board -e MYSQL_USER=user01 -e MYSQL_PASSWORD=user01 -e MYSQL_ROOT_PASSWORD=password -p 3306:3306 -v /home/ubuntu/docker_volume/mysql_volume:/var/lib/mysql  mysql
 
             docker run -d --rm --name app --network test -p 8080:8080 ${{ secrets.DOCKER_ID }}/cicd:latest
   slack: 

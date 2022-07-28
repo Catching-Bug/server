@@ -49,14 +49,14 @@ jacocoTestCoverageVerification {
 			limit {
 				counter = 'BRANCH'
 				value = 'COVEREDRATIO'
-				minimum = 0
+				minimum = 0.8
 			}
 
 			// 문장 커버리지 80%
 			limit {
 				counter = 'LINE'
 				value = 'COVEREDRATIO'
-				minimum = 0
+				minimum = 0.8
 			}
 
 			// 스프링 부트 메인 메소드 제외
@@ -66,17 +66,35 @@ jacocoTestCoverageVerification {
 }
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+
+
+	// Oauth2 library
 	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+
+	// Spring Security
 	implementation 'org.springframework.boot:spring-boot-starter-security'
+
+	// Etc
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+	// Spring Web
 	implementation 'org.springframework.boot:spring-boot-starter-web'
-	compileOnly 'org.projectlombok:lombok'
+
+	// DataBase Connector
 	runtimeOnly 'mysql:mysql-connector-java'
+
+	// JPA
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+
+	// Lombok
+	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
+
+	// Test
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
-	//test - lombok
+
+	// Test Lombok
 	testCompileOnly 'org.projectlombok:lombok:1.18.12'
 	testAnnotationProcessor 'org.projectlombok:lombok:1.18.12'
 }

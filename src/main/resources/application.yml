@@ -14,7 +14,7 @@ spring:
       max-request-size: 50MB
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/catch_bug?serverTimezone=UTC&characterEncoding=UTF-8
+    url: jdbc:mysql://localhost:3306/catch_bug_db?serverTimezone=UTC&characterEncoding=UTF-8
     username: user01
     password: user01
 

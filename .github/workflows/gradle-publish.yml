@@ -25,13 +25,9 @@ jobs:
         with:
           java-version: 11
 
-      - name: Setup MySQL
-          uses: samin/mysql-action@v1
-          with:
-            character set server: 'utf8'
-            mysql database: 'catch_bug_db'
-            mysql user: 'user01'
-            mysql password: 'user01'
+      - name: create mysql docker container # 가상환경에 mysql 컨테이너 생성
+          run: |
+            sudo docker run -d -p 3306:3306 --env MYSQL_DATABASE=catch_bug_db --env MYSQL_ROOT_PASSWORD=1234 mysql:8.0.23
 
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew

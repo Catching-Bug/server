@@ -1,4 +1,4 @@
-package com.catchbug.server.member.login;
+package com.catchbug.server.login;
 
 import org.springframework.stereotype.Service;
 

@@ -21,5 +21,8 @@ public class Member {
     @Enumerated(EnumType.STRING)
     private Gender gender;
 
+    @Column(name = "NICKNAME")
+    private String nickname;
+
 
 }

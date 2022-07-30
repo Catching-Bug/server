@@ -1,17 +1,10 @@
-package com.catchbug.server.member.login;
+package com.catchbug.server.login;
 
-import com.catchbug.server.login.LoginController;
-import com.catchbug.server.login.LoginService;
 import com.catchbug.server.login.dto.DtoOfLoginSuccess;
 import com.catchbug.server.member.Gender;
-import org.aspectj.lang.annotation.Before;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
@@ -42,10 +35,10 @@ public class LoginControllerTest {
                         accessToken("accessToken").
                         refreshToken("refreshToken").
                         gender(Gender.MALE)
-                        .nickName("tom").build();
+                        .nickname("tom").build();
 
         //given
-        given(loginService.login(any())).willReturn(dtoOfLoginSuccess);
+        given(loginService.login(any(), any())).willReturn(dtoOfLoginSuccess);
 
         // when & then
         this.mockMvc.perform(

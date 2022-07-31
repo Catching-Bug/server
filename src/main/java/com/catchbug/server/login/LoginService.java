@@ -10,17 +10,23 @@ import com.catchbug.server.oauth2.OauthProvider;
 import com.catchbug.server.oauth2.dto.DtoOfOauthTokenResponse;
 import com.catchbug.server.oauth2.dto.DtoOfUserProfile;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.MediaType;
+import org.springframework.http.client.reactive.ClientHttpConnector;
+import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.netty.http.client.HttpClient;
+import reactor.netty.resources.ConnectionProvider;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.Map;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class LoginService {
@@ -58,9 +64,14 @@ public class LoginService {
                 .bodyToMono(new ParameterizedTypeReference<Map<String, Object>>() {})
                 .block();
     }
-
+    private ClientHttpConnector connector() {
+        return new
+                ReactorClientHttpConnector(HttpClient.create(ConnectionProvider.newConnection()));
+    }
 
     private DtoOfOauthTokenResponse getToken(String code, OauthProvider provider) {
+
+
         return WebClient.create()
                 .post()
                 .uri("https://kauth.kakao.com/oauth/token")
@@ -77,6 +88,7 @@ public class LoginService {
     }
 
     private MultiValueMap<String, String> tokenRequest(String code, OauthProvider provider) {
+        log.info("code = {}", code);
         MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
         formData.add("code", code);
         formData.add("grant_type", "authorization_code");

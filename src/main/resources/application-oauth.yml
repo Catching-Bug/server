@@ -1,7 +1,7 @@
 oauth2:
   user:
     kakao:
-      client-id:
+      client-id: 1e9f53ef5d1b41846fe3d2e9e47a0e51
       client-secret: rcgeTZx1l9QBCMGPNY6TwUnjbU8dS5FV
       x-uri: http://localhost:8080/redirect/oauth
   provider:

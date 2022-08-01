@@ -15,7 +15,12 @@ import javax.persistence.*;
 public class Member {
 
     @Id
+    @Column(name = "ID")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(name = "KAKAO_ID")
+    private Long kakaoId;
 
     @Column(name = "GENDER")
     @Enumerated(EnumType.STRING)

@@ -10,16 +10,13 @@ import lombok.NoArgsConstructor;
 public class DtoOfOauthTokenResponse {
     @JsonProperty("access_token")
     private String accessToken;
-
-    private String scope;
-
-    @JsonProperty("token_type")
-    private String tokenType;
+    @JsonProperty("refresh_token")
+    private String refreshToken;
 
     @Builder
-    public DtoOfOauthTokenResponse(String accessToken, String scope, String tokenType) {
+    public DtoOfOauthTokenResponse(String accessToken, String refreshToken) {
         this.accessToken = accessToken;
-        this.scope = scope;
-        this.tokenType = tokenType;
+        this.refreshToken = refreshToken;
+
     }
 }

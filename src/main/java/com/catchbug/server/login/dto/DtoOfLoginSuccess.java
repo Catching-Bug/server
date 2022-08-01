@@ -13,7 +13,7 @@ public class DtoOfLoginSuccess {
     private String nickName;
 
     @Builder
-    public DtoOfLoginSuccess(String nickname, String tokenType, String accessToken, String refreshToken, Gender gender) {
+    public DtoOfLoginSuccess(String nickname, String accessToken, String refreshToken, Gender gender) {
 
         this.nickName = nickname;
         this.accessToken = "accessToken";

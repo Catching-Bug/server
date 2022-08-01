@@ -8,8 +8,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+
+import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -38,7 +41,7 @@ public class LoginControllerTest {
                         .nickname("tom").build();
 
         //given
-        given(loginService.login(any(), any())).willReturn(dtoOfLoginSuccess);
+        given(loginService.login(any())).willReturn(null);
 
         // when & then
         this.mockMvc.perform(

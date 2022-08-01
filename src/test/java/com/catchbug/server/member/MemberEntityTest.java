@@ -19,13 +19,16 @@ public class MemberEntityTest {
         //given, when
         Member maleMember = Member.builder().gender(Gender.MALE).build();
         Member femaleMember = Member.builder().gender(Gender.FEMALE).build();
+        Member noneMember = Member.builder().gender(Gender.NONE).build();
 
         //when
         Gender maleMemberGender = maleMember.getGender();
         Gender femaleMemberGender = femaleMember.getGender();
+        Gender noneMemberGender = noneMember.getGender();
         //then
         Assertions.assertEquals(Gender.MALE, maleMemberGender);
         Assertions.assertEquals(Gender.FEMALE, femaleMemberGender);
+        Assertions.assertEquals(Gender.NONE, noneMemberGender);
 
     }
     @DisplayName("Member는 Id를 가지고 있다.")

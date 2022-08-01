@@ -15,7 +15,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
-@SpringBootTest
+@SpringBootTest(classes = Oauth2Util.class)
 public class Oauth2UtilTest {
 
     @MockBean

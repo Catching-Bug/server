@@ -1,0 +1,3 @@
+jwt:
+  access-token-key: "abc"
+  refresh-token-key: "abcd"

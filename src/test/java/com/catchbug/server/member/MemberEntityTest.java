@@ -56,18 +56,18 @@ public class MemberEntityTest {
 
     }
 
-
-
-    @DisplayName("최초 로그인 시, 회원 정보를 저장한다.")
+    @DisplayName("필드 값 테스트")
     @Test
-    public void firstLogin_OnSuccess() throws Exception{
+    public void field_test() throws Exception{
 
         //given
-
+        String nickname = "abc";
         //when
-
+        Member member = Member.builder().nickname(nickname).build();
         //then
+        Assertions.assertEquals(nickname, member.getNickname());
 
     }
+
 
 }

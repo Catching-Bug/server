@@ -1,5 +1,7 @@
 package com.catchbug.server.login;
 
+import com.catchbug.server.jwt.JwtService;
+import com.catchbug.server.jwt.dto.DtoOfJwt;
 import com.catchbug.server.login.dto.DtoOfLoginSuccess;
 import com.catchbug.server.member.Gender;
 import com.catchbug.server.member.Member;
@@ -25,19 +27,21 @@ public class LoginService {
     private final MemberService memberService;
 
     @Autowired
+    private final JwtService jwtService;
+
+    @Autowired
     private final Oauth2Util oauth2Util;
 
     public DtoOfLoginSuccess login(String authorizationCode) throws JsonProcessingException {
 
         DtoOfOauthTokenResponse oauthTokenResponse = oauth2Util.getToken(authorizationCode);
         DtoOfUserProfile userProfile = oauth2Util.getUserProfile(oauthTokenResponse.getAccessToken());
-
         Member memberEntity = memberService.login(userProfile);
-
+        DtoOfJwt dtoOfJwt = jwtService.createTokenDto(memberEntity);
         DtoOfLoginSuccess dtoOfLoginSuccess = DtoOfLoginSuccess.builder()
                 .nickname(memberEntity.getNickname())
-                .accessToken(null)
-                .refreshToken(null)
+                .accessToken(dtoOfJwt.getAccessToken())
+                .refreshToken(dtoOfJwt.getRefreshToken())
                 .gender(memberEntity.getGender())
                 .build();
 

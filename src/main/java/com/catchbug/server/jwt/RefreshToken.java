@@ -1,5 +1,6 @@
 package com.catchbug.server.jwt;
 
+import com.catchbug.server.member.Gender;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -25,9 +26,18 @@ public class RefreshToken {
     @Column(name = "REFRESH_TOKEN")
     private String refreshToken;
 
-    public void updateRefreshToken(String refreshToken){
+    @Column(name = "MEMBER_ID")
+    private Long memberId;
 
-        this.refreshToken = refreshToken;
+    @Column(name = "NICKNAME")
+    private String nickname;
+
+    @Column(name = "GENDER")
+    private Gender gender;
+
+    public void updateAccessToken(String accessToken){
+
+        this.accessToken = accessToken;
 
     }
 }

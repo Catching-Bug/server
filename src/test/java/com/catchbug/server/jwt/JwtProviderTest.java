@@ -101,6 +101,44 @@ public class JwtProviderTest {
 
 
 
+
+
+    @DisplayName("RefreshToken 유효기간이 3일 이하이면 갱신이 필요하다는 true를 리턴한다.")
+    @Test
+    public void check_renew_refreshToken_OnRenew() throws Exception{
+
+        //given
+        Member member = setUpMember();
+        Long validTime = 1000 * 60 * 60 * 24L; // 24시간
+
+        String refreshToken = setUpToken(member, validTime, TokenType.ACCESS);
+
+        //when
+        boolean required_renew = jwtProvider.checkRenewRefreshToken(refreshToken, 3L);
+
+        //then
+        Assertions.assertTrue(required_renew);
+
+    }
+    @DisplayName("RefreshToken 유효기간이 3일 이상이면 갱신이 필요없다는 false를 리턴한다.")
+    @Test
+    public void check_renew_refreshToken_OnNotRenew() throws Exception{
+
+        //given
+        Member member = setUpMember();
+        Long validTime = 1000 * 60 * 60 * 24L * 5; // 5일
+
+        String refreshToken = setUpToken(member, validTime, TokenType.ACCESS);
+
+        //when
+        boolean required_renew = jwtProvider.checkRenewRefreshToken(refreshToken, 3L);
+
+        //then
+        Assertions.assertFalse(required_renew);
+
+    }
+
+
     public String setUpToken(Member member, Long validTime, TokenType tokenType){
         String encodedKey =  Base64.getEncoder().encodeToString(this.SECRET_KEY.getBytes());
         if(tokenType.equals(TokenType.REFRESH)){

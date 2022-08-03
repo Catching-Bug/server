@@ -1,6 +1,7 @@
-package com.catchbug.server.jwt;
+package com.catchbug.server.jwt.util;
 
 
+import com.catchbug.server.jwt.util.JwtFactory;
 import com.catchbug.server.member.Gender;
 import com.catchbug.server.member.Member;
 import org.junit.jupiter.api.Assertions;

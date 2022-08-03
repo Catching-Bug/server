@@ -1,11 +1,10 @@
 package com.catchbug.server.oauth2.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Builder;
-import lombok.Getter;
+import lombok.*;
 
 
-@Getter
+@Data
 public class DtoOfOauthTokenResponse {
     @JsonProperty("access_token")
     private String accessToken;
@@ -17,5 +16,9 @@ public class DtoOfOauthTokenResponse {
         this.accessToken = accessToken;
         this.refreshToken = refreshToken;
 
+    }
+
+    public DtoOfOauthTokenResponse(){
+        ;
     }
 }

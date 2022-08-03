@@ -1,4 +1,4 @@
-package com.catchbug.server.jwt;
+package com.catchbug.server.jwt.util;
 
 import com.catchbug.server.jwt.dto.DtoOfUserDataFromJwt;
 import com.catchbug.server.member.Gender;

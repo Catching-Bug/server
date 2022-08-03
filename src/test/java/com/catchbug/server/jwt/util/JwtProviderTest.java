@@ -1,4 +1,4 @@
-package com.catchbug.server.jwt;
+package com.catchbug.server.jwt.util;
 
 import com.catchbug.server.jwt.dto.DtoOfUserDataFromJwt;
 import com.catchbug.server.member.Member;
@@ -17,7 +17,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import java.util.Base64;
 import java.util.Date;
 
-import static com.catchbug.server.jwt.JwtFactoryTest.setUpMember;
+import static com.catchbug.server.jwt.util.JwtFactoryTest.setUpMember;
 
 @Slf4j
 @SpringBootTest(classes = JwtProvider.class)

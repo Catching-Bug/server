@@ -2,6 +2,8 @@ package com.catchbug.server.jwt;
 
 import com.catchbug.server.jwt.dto.DtoOfJwt;
 import com.catchbug.server.jwt.dto.DtoOfUserDataFromJwt;
+import com.catchbug.server.jwt.util.JwtFactory;
+import com.catchbug.server.jwt.util.JwtProvider;
 import com.catchbug.server.member.Gender;
 import com.catchbug.server.member.Member;
 import io.jsonwebtoken.Jwts;
@@ -18,7 +20,7 @@ import java.util.Base64;
 import java.util.Date;
 import java.util.Optional;
 
-import static com.catchbug.server.jwt.JwtFactoryTest.setUpMember;
+import static com.catchbug.server.jwt.util.JwtFactoryTest.setUpMember;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 

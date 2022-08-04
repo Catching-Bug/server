@@ -23,7 +23,7 @@ import static com.catchbug.server.jwt.util.JwtFactoryTest.setUpMember;
 @SpringBootTest(classes = JwtProvider.class)
 public class JwtProviderTest {
 
-    private final String SECRET_KEY = "sample";
+    private static final String SECRET_KEY = "sample";
 
     @MockBean
     private JwtFactory jwtFactory;
@@ -139,8 +139,8 @@ public class JwtProviderTest {
     }
 
 
-    public String setUpToken(Member member, Long validTime, TokenType tokenType){
-        String encodedKey =  Base64.getEncoder().encodeToString(this.SECRET_KEY.getBytes());
+    public static String setUpToken(Member member, Long validTime, TokenType tokenType){
+        String encodedKey =  Base64.getEncoder().encodeToString(SECRET_KEY.getBytes());
         if(tokenType.equals(TokenType.REFRESH)){
             Date now = new Date();
             return Jwts.builder()

@@ -16,8 +16,8 @@ public class DtoOfLoginSuccess {
     public DtoOfLoginSuccess(String nickname, String accessToken, String refreshToken, Gender gender) {
 
         this.nickName = nickname;
-        this.accessToken = "accessToken";
-        this.refreshToken = "refreshToken";
+        this.accessToken = accessToken;
+        this.refreshToken = refreshToken;
         this.gender = gender;
     }
 }

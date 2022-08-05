@@ -27,8 +27,11 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
         // 사전 처리한 token 얻기
         String token = (String) authentication.getPrincipal();
         try {
+            log.info("9");
             DtoOfUserDataFromJwt userPayloads = jwtProvider.getUserData(token);
+            log.info("10");
             UserContext context = new UserContext(userPayloads);
+            log.info("11");
             return new DtoOfJwtPostAuthenticationToken(context);
 
         } catch (SignatureException | MalformedJwtException | MissingClaimException | UnsupportedJwtException ex) {

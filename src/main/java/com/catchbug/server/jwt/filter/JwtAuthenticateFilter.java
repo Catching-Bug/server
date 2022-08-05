@@ -1,7 +1,6 @@
 package com.catchbug.server.jwt.filter;
 
 import com.catchbug.server.jwt.dto.DtoOfJwtAuthentication;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;

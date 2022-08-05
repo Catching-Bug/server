@@ -1,8 +1,8 @@
 package com.catchbug.server.jwt.provider;
 
-import com.catchbug.server.jwt.JwtService;
 import com.catchbug.server.jwt.dto.DtoOfJwtPostAuthenticationToken;
 import com.catchbug.server.jwt.dto.DtoOfUserDataFromJwt;
+import com.catchbug.server.jwt.exception.ModulatedJwtException;
 import com.catchbug.server.jwt.model.UserContext;
 import com.catchbug.server.jwt.util.JwtProvider;
 import io.jsonwebtoken.*;
@@ -14,6 +14,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Component;
 
 
+@Slf4j
 @RequiredArgsConstructor
 @Component
 public class JwtAuthenticationProvider implements AuthenticationProvider {
@@ -26,21 +27,17 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
         // 사전 처리한 token 얻기
         String token = (String) authentication.getPrincipal();
         try {
-
             DtoOfUserDataFromJwt userPayloads = jwtProvider.getUserData(token);
             UserContext context = new UserContext(userPayloads);
-
             return new DtoOfJwtPostAuthenticationToken(context);
 
-        } catch (SignatureException | MalformedJwtException | MissingClaimException ex) {
-
+        } catch (SignatureException | MalformedJwtException | MissingClaimException | UnsupportedJwtException ex) {
             // JWT 인증 예외
-            throw new RuntimeException();
+            throw new ModulatedJwtException("잘못된 토큰입니다.");
 
         } catch (ExpiredJwtException ex) {
-
             // JWT 만료 예외
-            throw new RuntimeException();
+            throw new com.catchbug.server.jwt.exception.ExpiredJwtException("만료된 토큰입니다.");
         }
 
     }

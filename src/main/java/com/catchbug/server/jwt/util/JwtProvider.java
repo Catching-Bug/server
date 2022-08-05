@@ -17,13 +17,18 @@ import java.util.Date;
 public class JwtProvider {
 
     String accessTokenKey = "sample";
-    String refreshTokenkey = "sample";
+    String refreshTokenKey = "sample";
     public void authenticateAccessToken(String accessToken){
-        Jwts.parser().setSigningKey(accessTokenKey.getBytes(StandardCharsets.UTF_8)).parseClaimsJws(accessToken).getBody();
+
+
+        Jwts.parser()
+                .setSigningKey(accessTokenKey.getBytes(StandardCharsets.UTF_8))
+                .parseClaimsJws(accessToken)
+                .getBody();
     }
 
     public void authenticateRefreshToken(String refreshToken){
-        Jwts.parser().setSigningKey(refreshTokenkey.getBytes(StandardCharsets.UTF_8)).parseClaimsJws(refreshToken).getBody();
+        Jwts.parser().setSigningKey(refreshTokenKey.getBytes(StandardCharsets.UTF_8)).parseClaimsJws(refreshToken).getBody();
     }
 
     public DtoOfUserDataFromJwt getUserData(String accessToken){
@@ -51,7 +56,7 @@ public class JwtProvider {
 
 
         Instant now = Instant.now();
-        Instant expiredTime = getClaims(refreshToken, this.refreshTokenkey).getExpiration().toInstant();
+        Instant expiredTime = getClaims(refreshToken, this.refreshTokenKey).getExpiration().toInstant();
 
         long diffTIme = now.until(expiredTime, ChronoUnit.DAYS);
 

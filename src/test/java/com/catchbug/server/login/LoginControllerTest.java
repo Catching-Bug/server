@@ -1,9 +1,13 @@
 package com.catchbug.server.login;
 
+import com.catchbug.server.jwt.filter.JwtAuthenticateFilter;
+import com.catchbug.server.jwt.handler.JwtAuthenticationFailureHandler;
+import com.catchbug.server.jwt.provider.JwtAuthenticationProvider;
 import com.catchbug.server.login.dto.DtoOfLoginSuccess;
 import com.catchbug.server.member.Gender;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -23,7 +27,16 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class LoginControllerTest {
 
     @MockBean
+    private JwtAuthenticateFilter jwtAuthenticateFilter;
+
+    @MockBean
+    private JwtAuthenticationFailureHandler jwtAuthenticationFailureHandler;
+
+    @MockBean
     private LoginService loginService;
+
+    @MockBean
+    private JwtAuthenticationProvider jwtAuthenticationProvider;
 
     @Autowired
     private MockMvc mockMvc;

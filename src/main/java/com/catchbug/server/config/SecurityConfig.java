@@ -30,7 +30,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public Filter jwtAuthenticationFilter() throws Exception {
         FilterSkipMatcher filterSkipMatcher = new FilterSkipMatcher(
                 List.of("/api/refresh", "/api/logout", "/token/refresh"),
-                List.of("/api/**")
+                List.of("/api/dd/**")
         );
         //필터 생성
         JwtAuthenticateFilter jwtAuthenticateFilter = new JwtAuthenticateFilter(filterSkipMatcher);
@@ -65,7 +65,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
 
         http.authorizeRequests()
-                .antMatchers("/token/refresh")
-                .permitAll();
+                .antMatchers("/token/refresh").permitAll()
+                .antMatchers("/api/board").authenticated();
     }
 }

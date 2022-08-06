@@ -1,11 +1,13 @@
 package com.catchbug.server.member;
 
+import com.catchbug.server.board.Board;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Builder
 @Getter
@@ -28,6 +30,15 @@ public class Member {
 
     @Column(name = "NICKNAME")
     private String nickname;
+
+    @OneToMany(mappedBy = "host", cascade = CascadeType.ALL)
+    private List<Board> hostingBoards;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "BOARD_ID")
+    private Board hiredBoard;
+
+
 
 
 }

@@ -4,6 +4,7 @@ import com.catchbug.server.jwt.dto.DtoOfJwt;
 import com.catchbug.server.jwt.filter.JwtAuthenticateFilter;
 import com.catchbug.server.jwt.handler.JwtAuthenticationFailureHandler;
 import com.catchbug.server.jwt.provider.JwtAuthenticationProvider;
+import com.catchbug.server.jwt.util.JwtProvider;
 import com.catchbug.server.jwt.util.JwtProviderTest;
 import com.catchbug.server.member.Member;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -30,14 +31,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class JwtControllerTest {
 
     @MockBean
-    private JwtAuthenticateFilter jwtAuthenticateFilter;
-
-    @MockBean
-    private JwtAuthenticationProvider jwtAuthenticationProvider;
-
-    @MockBean
-    private JwtAuthenticationFailureHandler jwtAuthenticationFailureHandler;
-
+    private JwtProvider jwtProvider;
     @MockBean
     private JwtService jwtService;
 

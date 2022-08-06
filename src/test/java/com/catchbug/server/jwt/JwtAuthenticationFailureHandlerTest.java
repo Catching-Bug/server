@@ -19,6 +19,7 @@ import javax.servlet.http.HttpServletResponse;
 @SpringBootTest(classes = JwtAuthenticationFailureHandler.class)
 public class JwtAuthenticationFailureHandlerTest {
 
+
     @Autowired
     private JwtAuthenticationFailureHandler jwtAuthenticationFailureHandler;
 

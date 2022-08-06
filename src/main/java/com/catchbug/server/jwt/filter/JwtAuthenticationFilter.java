@@ -1,6 +1,5 @@
 package com.catchbug.server.jwt.filter;
 
-import com.catchbug.server.jwt.dto.DtoOfJwtAuthentication;
 import com.catchbug.server.jwt.dto.DtoOfJwtPostAuthenticationToken;
 import com.catchbug.server.jwt.dto.DtoOfUserDataFromJwt;
 import com.catchbug.server.jwt.model.UserContext;
@@ -57,12 +56,4 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
         return authorizationHeader.substring(BEARER_PREFIX.length());
     }
 
-    /**
-     * 사용자에게서 받은 토큰을 토대로 생성한 인증 전 Authentication 객체
-     * @param token : 사용자 요청에서 받은 Token
-     * @return : Authentication 객체
-     */
-    private DtoOfJwtAuthentication getAuthentication(String token){
-        return new DtoOfJwtAuthentication(token);
-    }
 }

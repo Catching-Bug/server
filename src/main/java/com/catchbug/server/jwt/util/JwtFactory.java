@@ -13,8 +13,8 @@ import java.util.Date;
 @Component
 public class JwtFactory {
 
-    private String ACCESS_TOKEN_SECRET_KEY = "accesskey";
-    private String REFRESH_TOKEN_SECRET_KEY = "refreshkey";
+    private String ACCESS_TOKEN_SECRET_KEY = "sample";
+    private String REFRESH_TOKEN_SECRET_KEY = "sample";
 
     private Long ACCESS_TOKEN_VALID_TIME = 30 * 60 * 1000L; // 30 minutes
 

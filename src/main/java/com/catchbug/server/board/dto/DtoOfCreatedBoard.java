@@ -7,8 +7,6 @@ import lombok.Getter;
 @Builder
 public class DtoOfCreatedBoard {
 
-    private String title;
-    private String content;
     private Long roomId;
 
 }

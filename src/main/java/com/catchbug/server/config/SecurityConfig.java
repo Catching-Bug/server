@@ -25,6 +25,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.httpBasic().disable()
                 .authorizeRequests()// 요청에 대한 사용권한 체크
                 .antMatchers("/test").permitAll()
+                .antMatchers("/api/board").authenticated()
                 .antMatchers("/**").permitAll()
                 .and()
                 .addFilterBefore(new JwtAuthenticationFilter(jwtProvider),

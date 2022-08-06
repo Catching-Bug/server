@@ -5,6 +5,7 @@ import com.catchbug.server.jwt.dto.DtoOfUserDataFromJwt;
 import com.catchbug.server.jwt.model.UserContext;
 import com.catchbug.server.jwt.util.JwtProvider;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.GenericFilterBean;
 
@@ -15,6 +16,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
+@Slf4j
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends GenericFilterBean {
 
@@ -43,7 +45,6 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
         DtoOfJwtPostAuthenticationToken authentication = new DtoOfJwtPostAuthenticationToken(context);
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
-
 
         chain.doFilter(request, response);
     }

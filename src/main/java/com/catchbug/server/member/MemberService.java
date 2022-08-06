@@ -39,4 +39,10 @@ public class MemberService {
         return memberEntity;
 
     }
+
+    public Member getMember(Long id){
+        Member member = memberRepository.findById(id).get();
+
+        return member;
+    }
 }

@@ -2,6 +2,7 @@ package com.catchbug.server.board;
 
 import com.catchbug.server.board.dto.DtoOfCreateBoard;
 import com.catchbug.server.board.dto.DtoOfCreatedBoard;
+import com.catchbug.server.board.exception.NotCreateException;
 import com.catchbug.server.member.Member;
 import com.catchbug.server.member.MemberService;
 import org.junit.jupiter.api.Assertions;
@@ -100,6 +101,31 @@ public class BoardServiceTest {
         Assertions.assertTrue(actual);
 
     }
+
+    @DisplayName("이전에 생성한 방이 활성화 상태이면, NotCreateException 예외가 생긴다.")
+    @Test
+    public void check_NotCreateException() throws Exception{
+
+        //given
+
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime mockTime = LocalDateTime.now().minusMinutes(9L);
+        DtoOfCreateBoard dtoOfCreateBoard = DtoOfCreateBoard.builder()
+                .title("테스트제목")
+                .content("테스트내용")
+                .build();
+        //when
+        given(memberService.getMember(1L)).willReturn(memberEntity);
+        given(memberEntity.getLatestBoard()).willReturn(mockTime);
+
+        //then
+
+        Assertions.assertThrows(NotCreateException.class,() -> {
+            boardService.createBoard(1L, dtoOfCreateBoard);
+        });
+
+    }
+
 
 
 }

@@ -2,6 +2,7 @@ package com.catchbug.server.board;
 
 import com.catchbug.server.board.dto.DtoOfCreateBoard;
 import com.catchbug.server.board.dto.DtoOfCreatedBoard;
+import com.catchbug.server.board.exception.NotCreateException;
 import com.catchbug.server.member.Member;
 import com.catchbug.server.member.MemberService;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +22,7 @@ public class BoardService {
         Member memberEntity = memberService.getMember(memberId);
 
         if(!checkCreatable(memberEntity)){
-            // todo 예외 터트려야 함
+            throw new NotCreateException("활성화된 글이 존재합니다. 방을 생성할 수 없습니다.");
         }
 
         Board board = Board.builder()

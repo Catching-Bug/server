@@ -5,11 +5,13 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
+@Slf4j
 @Builder
 @Getter
 @Entity
@@ -45,7 +47,8 @@ public class Member {
      * @author : youngho cha
      */
     public LocalDateTime getLatestBoard(){
-        if(this.hostingBoards == null){
+
+        if(this.hostingBoards.isEmpty()){
             return null;
         }
         LocalDateTime maxDate = this.hostingBoards.stream().map(u -> u.getCreatedTime()).max(LocalDateTime::compareTo).get();

@@ -26,6 +26,7 @@ public class JwtControllerTest {
 
     @MockBean
     private JwtProvider jwtProvider;
+
     @MockBean
     private JwtService jwtService;
 
@@ -56,5 +57,7 @@ public class JwtControllerTest {
         ).andExpect(status().isOk());
 
     }
+
+
 
 }

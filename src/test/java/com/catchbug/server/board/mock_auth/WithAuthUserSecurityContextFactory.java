@@ -2,7 +2,7 @@ package com.catchbug.server.board.mock_auth;
 
 import com.catchbug.server.jwt.dto.DtoOfJwtPostAuthenticationToken;
 import com.catchbug.server.jwt.dto.DtoOfUserDataFromJwt;
-import com.catchbug.server.jwt.model.UserContext;
+import com.catchbug.server.jwt.model.AuthUser;
 import com.catchbug.server.member.Gender;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -20,7 +20,7 @@ public class WithAuthUserSecurityContextFactory implements WithSecurityContextFa
                 .gender(gender)
                 .nickname(nickname)
                 .build();
-        UserContext userContext = new UserContext(dtoOfUserDataFromJwt);
+        AuthUser userContext = AuthUser.builder().userPayloads(dtoOfUserDataFromJwt).build();
         DtoOfJwtPostAuthenticationToken dtoOfJwtPostAuthenticationToken =
                 new DtoOfJwtPostAuthenticationToken(userContext);
 

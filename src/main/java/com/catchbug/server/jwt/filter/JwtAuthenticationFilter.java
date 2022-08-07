@@ -2,7 +2,7 @@ package com.catchbug.server.jwt.filter;
 
 import com.catchbug.server.jwt.dto.DtoOfJwtPostAuthenticationToken;
 import com.catchbug.server.jwt.dto.DtoOfUserDataFromJwt;
-import com.catchbug.server.jwt.model.UserContext;
+import com.catchbug.server.jwt.model.AuthUser;
 import com.catchbug.server.jwt.util.JwtProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -40,7 +40,7 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
 
         DtoOfUserDataFromJwt userPayloads = jwtProvider.getUserData(token);
 
-        UserContext context = new UserContext(userPayloads);
+        AuthUser context = AuthUser.builder().id(String.valueOf(userPayloads.getId())).userPayloads(userPayloads).build();
 
         DtoOfJwtPostAuthenticationToken authentication = new DtoOfJwtPostAuthenticationToken(context);
 

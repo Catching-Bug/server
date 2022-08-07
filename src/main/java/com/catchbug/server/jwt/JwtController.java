@@ -21,9 +21,4 @@ public class JwtController {
 
         return ResponseEntity.ok(dtoOfJwt);
     }
-
-    @GetMapping("/test")
-    public String test(){
-        return "통과";
-    }
 }

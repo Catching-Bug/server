@@ -11,9 +11,11 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.util.Optional;
 
+import static com.catchbug.server.jwt.util.JwtFactoryTest.setUpMember;
 import static com.catchbug.server.oauth2.Oauth2UtilTest.setUpSampleProfile;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.when;
 
 
@@ -107,6 +109,27 @@ public class MemberServiceTest {
         Assertions.assertEquals(123456L, actualMember.getKakaoId());
         Assertions.assertEquals("테스트아이디", actualMember.getNickname());
         Assertions.assertEquals(Gender.MALE, actualMember.getGender());
+
+    }
+
+    @DisplayName("getMember 호출 시, 파라미터 id를 가지고 있는 memberEntity가 리턴되어야 한다.")
+    @Test
+    public void getMember_test_OnSuccess() throws Exception{
+
+        //given
+        Member expectedMember = setUpMember();
+
+        //when & mocking
+        given(memberRepository.findById(expectedMember.getId())).willReturn(Optional.of(expectedMember));
+
+        Member actualMember = memberService.getMember(expectedMember.getId());
+        //then
+
+        Assertions.assertEquals(expectedMember.getId(), actualMember.getId());
+        Assertions.assertEquals(expectedMember.getGender(), actualMember.getGender());
+        Assertions.assertEquals(expectedMember.getNickname(), actualMember.getNickname());
+
+
 
     }
 

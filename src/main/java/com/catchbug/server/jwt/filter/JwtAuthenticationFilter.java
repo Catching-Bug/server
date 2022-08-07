@@ -1,11 +1,11 @@
 package com.catchbug.server.jwt.filter;
 
-import com.catchbug.server.jwt.dto.DtoOfJwtAuthentication;
 import com.catchbug.server.jwt.dto.DtoOfJwtPostAuthenticationToken;
 import com.catchbug.server.jwt.dto.DtoOfUserDataFromJwt;
-import com.catchbug.server.jwt.model.UserContext;
+import com.catchbug.server.jwt.model.AuthUser;
 import com.catchbug.server.jwt.util.JwtProvider;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.GenericFilterBean;
 
@@ -16,6 +16,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
+@Slf4j
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends GenericFilterBean {
 
@@ -39,12 +40,11 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
 
         DtoOfUserDataFromJwt userPayloads = jwtProvider.getUserData(token);
 
-        UserContext context = new UserContext(userPayloads);
+        AuthUser context = AuthUser.builder().id(String.valueOf(userPayloads.getId())).userPayloads(userPayloads).build();
 
         DtoOfJwtPostAuthenticationToken authentication = new DtoOfJwtPostAuthenticationToken(context);
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
-
 
         chain.doFilter(request, response);
     }
@@ -57,12 +57,4 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
         return authorizationHeader.substring(BEARER_PREFIX.length());
     }
 
-    /**
-     * 사용자에게서 받은 토큰을 토대로 생성한 인증 전 Authentication 객체
-     * @param token : 사용자 요청에서 받은 Token
-     * @return : Authentication 객체
-     */
-    private DtoOfJwtAuthentication getAuthentication(String token){
-        return new DtoOfJwtAuthentication(token);
-    }
 }

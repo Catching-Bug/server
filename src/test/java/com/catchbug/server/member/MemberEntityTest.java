@@ -7,9 +7,14 @@ package com.catchbug.server.member;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 
+import java.time.LocalDateTime;
 
+import static com.catchbug.server.jwt.util.JwtFactoryTest.setUpMember;
 
+@MockBean(JpaMetamodelMappingContext.class)
 public class MemberEntityTest {
 
     @DisplayName("Member는 성별을 가지고 있다.")
@@ -68,6 +73,25 @@ public class MemberEntityTest {
         Assertions.assertEquals(nickname, member.getNickname());
 
     }
+
+    @DisplayName("사용자가 사전에 생성한 게시판 글이 없으면 null 이 리턴되어야 한다.")
+    @Test
+    public void check_board_history_time() throws Exception{
+
+        //given
+        Member member = setUpMember();
+        //when
+        
+        LocalDateTime actual = member.getLatestBoard();
+
+        //then
+        Assertions.assertNull(actual);
+
+    }
+
+
+
+
 
 
 }

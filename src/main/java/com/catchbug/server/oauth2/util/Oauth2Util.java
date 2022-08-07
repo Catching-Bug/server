@@ -12,7 +12,18 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
-
+/**
+ * <h1>Oauth2Util</h1>
+ * <p>
+ *     Util for Oauth2
+ * </p>
+ * <p>
+ *     Oauth2에 대한 로직이 있는 클래스
+ * </p>
+ *
+ * @see com.catchbug.server.oauth2.util.Oauth2RequestUtil
+ * @author younghoCha
+ */
 @RequiredArgsConstructor
 @Component
 public class Oauth2Util {
@@ -20,7 +31,12 @@ public class Oauth2Util {
     @Autowired
     private final Oauth2RequestUtil oauth2RequestUtil;
 
-
+    /**
+     * Oauth2 Authorization Server로 부터 Access Token을 받기 위한 메서드
+     * @param code : Oauth2 Authorization Server 로 부터 받은 Authorization Code
+     * @return DtoOfOauthTokenResponse : Oauth2 Authorization Server 로 부터 받은 AccessToken
+     * @throws JsonProcessingException
+     */
     public DtoOfOauthTokenResponse getToken(String code) throws JsonProcessingException {
 
         HttpHeaders headers = new HttpHeaders();
@@ -34,7 +50,11 @@ public class Oauth2Util {
         return dtoOfOauthTokenResponse;
     }
 
-
+    /**
+     * Oauth2 Authorization Server 로 요청을 보낼 파라미터를 생성하는 메서드
+     * @param code : Oauth2 Authorization Server 로 부터 받은 Authorization Code
+     * @return MultiValudeMap<String, String> : 요청을 보낼 파라미터를 가지고있는 객체
+     */
     private MultiValueMap<String, String> generateParam(String code){
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
 
@@ -47,6 +67,12 @@ public class Oauth2Util {
         return params;
     }
 
+    /**
+     * Oauth2 Resource Server로 AccessToken을 통해 유저 정보를 요청하는 메서드
+     * @param accessToken : Oauth2 Authorization Server 로 부터 받은 Access Token
+     * @return DtoOfUserProfile : Oauth2 Resource Server 로 부터 받은 유저 정보
+     * @throws JsonProcessingException
+     */
     public DtoOfUserProfile getUserProfile(String accessToken) throws JsonProcessingException {
 
         DtoOfUserProfile dtoOfUserProfile = oauth2RequestUtil.requestProfile(accessToken);

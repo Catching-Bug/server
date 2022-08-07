@@ -10,13 +10,39 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 
+/**
+ * <h1>BoardService</h1>
+ * <p>
+ *     Business Object From Board
+ * </p>
+ * <p>
+ *     게시 글에 대한 비즈니스 로직 클래스
+ * </p>
+ *
+ * @see com.catchbug.server.board.Board
+ * @see com.catchbug.server.board.BoardController
+ * @see com.catchbug.server.board.BoardRepository
+ * @author younghoCha
+ */
 @RequiredArgsConstructor
 @Service
 public class BoardService {
 
     private final BoardRepository boardRepository;
     private final MemberService memberService;
+
+    /**
+     * <h3>Board valid time</h3>
+     * 게시판 글의 활성 시간
+     */
     private final Long BOARD_VALID_TIME = 10L;
+
+    /**
+     * 게시판 글 생성 메소드
+     * @param memberId : 요청자 id
+     * @param dtoOfCreateBoard : 게시판 글 생성 dto
+     * @return
+     */
     public DtoOfCreatedBoard createBoard(Long memberId, DtoOfCreateBoard dtoOfCreateBoard){
 
         Member memberEntity = memberService.getMember(memberId);

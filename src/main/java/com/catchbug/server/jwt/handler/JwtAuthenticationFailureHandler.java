@@ -18,6 +18,18 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+/**
+ * <h1>JwtAuthenticationFailureHandler</h1>
+ * <p>
+ *     Handler for Jwt verify Exception
+ * </p>
+ * <p>
+ *     JWT 예외 핸들러 클래스
+ * </p>
+ *
+ * @see com.catchbug.server.jwt.filter.JwtAuthenticationFilter
+ * @author younghoCha
+ */
 @RequiredArgsConstructor
 @Component
 public class JwtAuthenticationFailureHandler implements AuthenticationFailureHandler {

@@ -16,12 +16,35 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
-@Slf4j
+
+/**
+ * <h1>JwtAuthenticationFilter</h1>
+ * <p>
+ *     Authentication Filter for JWT
+ * </p>
+ * <p>
+ *     JWT 를 검증할 필터
+ * </p>
+ * @see JwtProvider
+ *
+ * @author younghoCha
+ */
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends GenericFilterBean {
 
+    /**
+     * 요청자 헤더의 JWT key
+     */
     private static final String AUTHORIZATION_HEADER = "Authorization";
+
+    /**
+     * JWT header prefix
+     */
     private static final String BEARER_PREFIX = "Bearer ";
+
+    /**
+     * JWT verify object
+     */
     private final JwtProvider jwtProvider;
 
     @Override

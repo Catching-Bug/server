@@ -8,6 +8,18 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 
+/**
+ * <h1>AuthUser</h1>
+ * <p>
+ *     Custom Authentication Object
+ * </p>
+ * <p>
+ *     스프링 시큐리티에 사용될 Authentication 객체
+ * </p>
+ *
+ * @see com.catchbug.server.jwt.filter.JwtAuthenticationFilter
+ * @author younghoCha
+ */
 @Getter
 @Builder
 public class AuthUser implements UserDetails {

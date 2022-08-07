@@ -3,14 +3,22 @@ package com.catchbug.server.config;
 import com.catchbug.server.jwt.filter.JwtAuthenticationFilter;
 import com.catchbug.server.jwt.util.JwtProvider;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.annotation.Bean;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+/**
+ * <h1>SecurityConfg</h1>
+ * <p>
+ *     configuration for Security
+ * </p>
+ * <p>
+ *    시큐리티 설정 클래스
+ * </p>
+ * @author younghoCha
+ */
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig extends WebSecurityConfigurerAdapter {

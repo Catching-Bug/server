@@ -14,8 +14,19 @@ import org.springframework.web.client.RestTemplate;
 import java.net.http.HttpRequest;
 import java.util.Map;
 
+/**
+ * <h1>Oauth2RequestUtil</h1>
+ * <p>
+ *     Oauth2 Request Object
+ * </p>
+ * <p>
+ *     Oauth2 Request와 Response를 직접 받을 클래스
+ * </p>
+ *
+ * @see com.catchbug.server.oauth2.util.Oauth2Util
+ * @author younghoCha
+ */
 @Component
-@Slf4j
 public class Oauth2RequestUtil {
 
     private ObjectMapper objectMapper;
@@ -23,6 +34,13 @@ public class Oauth2RequestUtil {
     public Oauth2RequestUtil(){
         this.objectMapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES,false);
     }
+
+    /**
+     * Oauth2 Authorization Server 에 Access Token을 요청하는 메서드
+     * @param request : Api에 맞게 만들어진 request
+     * @return DtoOfOauthTokenResponse : 받은 AccessToken을 바인딩한 Dto 객체
+     * @throws JsonProcessingException
+     */
     public DtoOfOauthTokenResponse requestAuth(HttpEntity request) throws JsonProcessingException {
 
         RestTemplate restTemplate = new RestTemplate();
@@ -38,6 +56,12 @@ public class Oauth2RequestUtil {
         return dtoOfOauthTokenResponse;
     }
 
+    /**
+     * Oauth2 Resource 서버에 AccessToken을 통해서 User Profile을 요청하는 메서드
+     * @param accessToken : Oauth2 Authorization 서버로 부터 받은 Access Token
+     * @return DtoOfUserProfile : Oauth2 Resource 서버로 부터 받은 User Profile
+     * @throws JsonProcessingException
+     */
     public DtoOfUserProfile requestProfile(String accessToken) throws JsonProcessingException {
 
 

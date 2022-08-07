@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -47,6 +48,10 @@ public class Member {
      * @author : youngho cha
      */
     public LocalDateTime getLatestBoard(){
+
+        if(this.hostingBoards == null){
+            return null;
+        }
 
         if(this.hostingBoards.isEmpty()){
             return null;

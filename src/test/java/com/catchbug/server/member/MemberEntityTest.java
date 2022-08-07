@@ -7,12 +7,14 @@ package com.catchbug.server.member;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 
 import java.time.LocalDateTime;
 
 import static com.catchbug.server.jwt.util.JwtFactoryTest.setUpMember;
 
-
+@MockBean(JpaMetamodelMappingContext.class)
 public class MemberEntityTest {
 
     @DisplayName("Member는 성별을 가지고 있다.")
@@ -79,7 +81,7 @@ public class MemberEntityTest {
         //given
         Member member = setUpMember();
         //when
-
+        
         LocalDateTime actual = member.getLatestBoard();
 
         //then

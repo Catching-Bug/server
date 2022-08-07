@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 
 import java.time.LocalDateTime;
 
@@ -18,6 +19,7 @@ import static com.catchbug.server.jwt.util.JwtFactoryTest.setUpMember;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
+@MockBean(JpaMetamodelMappingContext.class)
 @SpringBootTest(classes = BoardService.class)
 public class BoardServiceTest {
 
@@ -49,6 +51,7 @@ public class BoardServiceTest {
                 .id(1L).build();
         given(boardRepository.save(any())).willReturn(board);
         given(memberService.getMember(member.getId())).willReturn(member);
+        given(memberEntity.getLatestBoard()).willReturn(null);
 
         //when
         DtoOfCreatedBoard createdBoard = boardService.createBoard(member.getId(), dtoOfCreateBoard);

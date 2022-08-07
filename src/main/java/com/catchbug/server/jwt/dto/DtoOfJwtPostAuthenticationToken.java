@@ -7,6 +7,18 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import java.util.List;
 
+/**
+ * <h1>DtoOfJwtPostAuenticationToken</h1>
+ * <p>
+ *     Authentication when pre authenticate object
+ * </p>
+ * <p>
+ *     시큐리티 필터 단에서 인증 전에 생성될 Authentication 객체
+ * </p>
+ *
+ * @see com.catchbug.server.jwt.filter.JwtAuthenticationFilter
+ * @author younghoCha
+ */
 @Getter
 public class DtoOfJwtPostAuthenticationToken extends AbstractAuthenticationToken {
     private final AuthUser authUserContext;

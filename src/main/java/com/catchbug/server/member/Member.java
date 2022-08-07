@@ -12,32 +12,60 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-@Slf4j
+/**
+ * <h1>Member</h1>
+ * <p>
+ *     Entity of Member
+ * </p>
+ * <p>
+ *     사용자에 대한 엔티티
+ * </p>
+ *
+ * @see com.catchbug.server.member.MemberRepository
+ * @author younghoCha
+ */
 @Builder
 @Getter
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
 public class Member {
-
+    /**
+     * 사용자 id(pk)
+     */
     @Id
     @Column(name = "ID")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    /**
+     * oauth2 에서 제공받은 사용자 id
+     */
     @Column(name = "KAKAO_ID")
     private Long kakaoId;
 
+    /**
+     * 사용자 성별
+     */
     @Column(name = "GENDER")
     @Enumerated(EnumType.STRING)
     private Gender gender;
 
+    /**
+     * 사용자 닉네임
+     */
     @Column(name = "NICKNAME")
     private String nickname;
 
+    /**
+     * 사용자가 생성한 글
+     */
     @OneToMany(mappedBy = "host", cascade = CascadeType.ALL)
     private List<Board> hostingBoards;
 
+    /**
+     * 사용자가 배치받은 글
+     */
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "BOARD_ID")
     private Board hiredBoard;

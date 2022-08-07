@@ -10,14 +10,36 @@ import org.springframework.stereotype.Component;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.Date;
 
-@Slf4j
+/**
+ * <h1>JwtProvider</h1>
+ * <p>
+ *     verify, getData Util
+ * </p>
+ * <p>
+ *     Jwt 의 검증 및 decoding 메서드
+ * </p>
+ *
+ * @see com.catchbug.server.jwt.JwtService
+ * @author younghoCha
+ */
 @Component
 public class JwtProvider {
 
+    /**
+     * 엑세스 토큰 키
+     */
     String accessTokenKey = "sample";
+
+    /**
+     * 리프레시 토큰 키
+     */
     String refreshTokenKey = "sample";
+
+    /**
+     * 엑세스 토큰 검증 메서드
+     * @param accessToken : 요청자로부터 전달받은 엑세스 토큰
+     */
     public void authenticateAccessToken(String accessToken){
 
 
@@ -27,10 +49,19 @@ public class JwtProvider {
                 .getBody();
     }
 
+    /**
+     * 리프레시 토큰 검증 메서드
+     * @param refreshToken : 요청자로부터 받은 리프레시 토큰
+     */
     public void authenticateRefreshToken(String refreshToken){
         Jwts.parser().setSigningKey(refreshTokenKey.getBytes(StandardCharsets.UTF_8)).parseClaimsJws(refreshToken).getBody();
     }
 
+    /**
+     * 엑세스 토큰의 PayLoads 를 얻는 메서드
+     * @param accessToken : 요청자로부터 받은 엑세스 토큰
+     * @return 토큰에 포함된 Payloads
+     */
     public DtoOfUserDataFromJwt getUserData(String accessToken){
 
         Claims claims = getClaims(accessToken, this.accessTokenKey);
@@ -52,6 +83,12 @@ public class JwtProvider {
 
     }
 
+    /**
+     * 리프레시 토큰을 갱신해야하는지 판별하는 메서드
+     * @param refreshToken : 요청자에게 전달받은 리프레시 토큰
+     * @param time : 리프레시 토큰 유효기간
+     * @return true일 경우 리프레시 필요, false일 경우 리프레시 불 필요
+     */
     public boolean checkRenewRefreshToken(String refreshToken, Long time){
 
 
@@ -63,6 +100,12 @@ public class JwtProvider {
         return diffTIme < time;
     }
 
+    /**
+     * 토큰으로부터 Claims 객체를 얻기위한 메서드
+     * @param token : JWT
+     * @param tokenKey : JWT key
+     * @return JWT claims
+     */
     private Claims getClaims(String token, String tokenKey){
         return Jwts.parser()
                 .setSigningKey(tokenKey.getBytes(StandardCharsets.UTF_8))

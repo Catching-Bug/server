@@ -7,6 +7,18 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+/**
+ * <h1>UserContextService</h1>
+ * <p>
+ *     UserDetailsService
+ * </p>
+ * <p>
+ *     Authentication 객체를 Controller에서 사용하기 위한 서비스
+ * </p>
+ *
+ * @see com.catchbug.server.jwt.JwtController
+ * @author younghoCha
+ */
 @Service
 @RequiredArgsConstructor
 public class UserContextService implements UserDetailsService {

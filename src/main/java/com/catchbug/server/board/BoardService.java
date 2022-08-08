@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 /**
  * <h1>BoardService</h1>
  * <p>
- *     Business Object From Board
+ *     Business Object of Board
  * </p>
  * <p>
  *     게시 글에 대한 비즈니스 로직 클래스

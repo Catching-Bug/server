@@ -2,6 +2,7 @@ package com.catchbug.server.board;
 
 import com.catchbug.server.board.dto.DtoOfCreateBoard;
 import com.catchbug.server.board.dto.DtoOfCreatedBoard;
+import com.catchbug.server.common.response.Response;
 import com.catchbug.server.jwt.model.AuthUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,6 +49,8 @@ public class BoardController {
      */
     @PostMapping("/api/board")
     public ResponseEntity createBoard(@AuthenticationPrincipal AuthUser authUser, @Validated @RequestBody DtoOfCreateBoard dtoOfCreateBoard, BindingResult bindingResult){
+
+        //바인딩 오류가 존재할 경우
         if(bindingResult.hasErrors()){
             return getResponseEntityFromBindingException(bindingResult);
         }
@@ -55,7 +58,9 @@ public class BoardController {
         DtoOfCreatedBoard dtoOfCreatedBoard =
                 boardService.createBoard(Long.parseLong(authUser.getId()), dtoOfCreateBoard);
 
-        return new ResponseEntity(dtoOfCreatedBoard, HttpStatus.CREATED);
+        Response response = Response.builder().message("성공적으로 생성되었습니다.").content(dtoOfCreateBoard).build();
+
+        return new ResponseEntity(response, HttpStatus.CREATED);
     }
 
     /**
@@ -64,7 +69,8 @@ public class BoardController {
      * @return ResponseEntity : validation error 시 응답 메세지
      */
     public ResponseEntity<?> getResponseEntityFromBindingException(BindingResult bindingResult){
-        String message = "잘못된 요청 형식입니다.";
-        return ResponseEntity.badRequest().body(message);
+
+        Response response = Response.builder().content(null).message("잘못된 요청 형식입니다.").build();
+        return ResponseEntity.badRequest().body(response);
     }
 }

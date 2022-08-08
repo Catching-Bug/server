@@ -1,5 +1,6 @@
 package com.catchbug.server.login;
 
+import com.catchbug.server.common.response.Response;
 import com.catchbug.server.login.dto.DtoOfLoginSuccess;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
@@ -37,6 +38,7 @@ public class LoginController {
     @GetMapping("/login/oauth")
     public ResponseEntity<?> oauth2Login(@RequestParam String code) throws JsonProcessingException {
         DtoOfLoginSuccess loginSuccess = loginService.login(code);
-        return ResponseEntity.ok(loginSuccess);
+        Response response = Response.builder().content(loginSuccess).message("로그인에 성공했습니다.").build();
+        return ResponseEntity.ok(response);
     }
 }

@@ -37,6 +37,7 @@ public class LocationService {
         Member memberEntity = memberService.getMember(Long.parseLong(user.getId()));
 
         Location location = Location.builder()
+                .locationName(dtoOfCreateLocation.getLocationName())
                 .detailLocation(dtoOfCreateLocation.getDetailLocation())
                 .city(dtoOfCreateLocation.getCity())
                 .latitude(dtoOfCreateLocation.getLatitude())
@@ -50,6 +51,7 @@ public class LocationService {
         locationEntity.updateMember(memberEntity);
 
         return DtoOfCreatedLocation.builder()
+                .locationName(dtoOfCreateLocation.getLocationName())
                 .detailLocation(locationEntity.getDetailLocation())
                 .city(locationEntity.getCity())
                 .latitude(locationEntity.getLatitude())

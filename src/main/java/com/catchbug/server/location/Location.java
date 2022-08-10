@@ -38,6 +38,12 @@ public class Location {
     private Long id;
 
     /**
+     * 위치 이름
+     */
+    @Column
+    private String locationName;
+
+    /**
      * 위도
      */
     @Column(name = "LATITUDE")

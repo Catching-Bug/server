@@ -22,6 +22,11 @@ import lombok.Getter;
 public class DtoOfCreatedLocation {
 
     /**
+     * 위치 이름
+     */
+    private String locationName;
+
+    /**
      * 저장된 위도
      */
     private double latitude;

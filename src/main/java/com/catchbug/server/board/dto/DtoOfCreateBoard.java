@@ -39,4 +39,34 @@ public class DtoOfCreateBoard {
     @NotNull(message = "내용은 최소 1글자 이상이어야 합니다.")
     private String content;
 
+    /**
+     * 생성될 글 위도
+     */
+    private double latitude;
+
+    /**
+     * 생성될 글 경도
+     */
+    private double longitude;
+
+    /**
+     * 생성될 글 도, 시
+     */
+    private String region;
+
+    /**
+     * 생성될 글 시, 군, 구
+     */
+    private String city;
+
+    /**
+     * 생성될 글 읍, 면, 동
+     */
+    private String town;
+
+    /**
+     * 생성될 글 상세 주소
+     */
+    private String detailLocation;
+
 }

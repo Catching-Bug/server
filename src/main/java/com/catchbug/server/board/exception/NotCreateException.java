@@ -14,9 +14,6 @@ package com.catchbug.server.board.exception;
  */
 public class NotCreateException extends RuntimeException{
 
-    public NotCreateException(){
-        super();
-    }
 
     /**
      * message가 필요한 생성자

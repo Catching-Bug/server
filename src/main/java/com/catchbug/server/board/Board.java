@@ -74,4 +74,35 @@ public class Board extends BoardBaseEntity {
     @OneToOne(mappedBy = "hiredBoard")
     private Member employee;
 
+    /**
+     * 도, 시
+     */
+    private String region;
+
+    /**
+     * 시군구
+     */
+    private String city;
+
+    /**
+     * 읍면동
+     */
+    private String town;
+
+    /**
+     * 상세주소
+     */
+    private String detailLocation;
+
+    /**
+     * 위도
+     */
+    private double latitude;
+
+    /**
+     * 경도
+     */
+    private double longitude;
+
+
 }

@@ -63,7 +63,9 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
 
         DtoOfUserDataFromJwt userPayloads = jwtProvider.getUserData(token);
 
-        AuthUser context = AuthUser.builder().id(String.valueOf(userPayloads.getId())).userPayloads(userPayloads).build();
+        AuthUser context = AuthUser.builder()
+                .id(String.valueOf(userPayloads.getId()))
+                .userPayloads(userPayloads).build();
 
         DtoOfJwtPostAuthenticationToken authentication = new DtoOfJwtPostAuthenticationToken(context);
 

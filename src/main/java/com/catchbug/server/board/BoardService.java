@@ -2,7 +2,9 @@ package com.catchbug.server.board;
 
 import com.catchbug.server.board.dto.DtoOfCreateBoard;
 import com.catchbug.server.board.dto.DtoOfCreatedBoard;
+import com.catchbug.server.board.dto.DtoOfGetBoard;
 import com.catchbug.server.board.exception.NotCreateException;
+import com.catchbug.server.board.exception.NotFoundBoardException;
 import com.catchbug.server.member.Member;
 import com.catchbug.server.member.MemberService;
 import lombok.RequiredArgsConstructor;
@@ -55,6 +57,12 @@ public class BoardService {
                 .title(dtoOfCreateBoard.getTitle())
                 .content(dtoOfCreateBoard.getContent())
                 .host(memberEntity)
+                .latitude(dtoOfCreateBoard.getLatitude())
+                .longitude(dtoOfCreateBoard.getLongitude())
+                .region(dtoOfCreateBoard.getRegion())
+                .city(dtoOfCreateBoard.getCity())
+                .town(dtoOfCreateBoard.getTown())
+                .detailLocation(dtoOfCreateBoard.getDetailLocation())
                 .build();
 
         Board boardEntity = boardRepository.save(board);
@@ -84,5 +92,31 @@ public class BoardService {
 
         return boardValidDate.compareTo(now) > 0 ? false : true;
 
+    }
+
+    /**
+     * 글을 조회하는 메소드
+     * @param roomId : 조회하려는 글의 id
+     * @return 조회 결과 dto
+     */
+    public DtoOfGetBoard getBoard(Long roomId){
+
+        Board boardEntity = boardRepository.findById(roomId)
+                .orElseThrow(() -> new NotFoundBoardException("해당 글을 찾을 수 없습니다."));
+
+        return DtoOfGetBoard.builder()
+                .id(boardEntity.getId())
+                .region(boardEntity.getRegion())
+                .city(boardEntity.getCity())
+                .town(boardEntity.getTown())
+                .detailLocation(boardEntity.getDetailLocation())
+                .createdAt(boardEntity.getCreatedTime())
+                .roomTitle(boardEntity.getTitle())
+                .roomContent(boardEntity.getContent())
+                .creatorNickname(boardEntity.getHost().getNickname())
+                .latitude(boardEntity.getLatitude())
+                .longitude(boardEntity.getLongitude())
+                .creatorId(boardEntity.getHost().getId())
+                .build();
     }
 }

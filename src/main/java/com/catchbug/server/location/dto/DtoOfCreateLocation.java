@@ -3,6 +3,8 @@ package com.catchbug.server.location.dto;
 import lombok.Builder;
 import lombok.Getter;
 
+import javax.validation.constraints.NotNull;
+
 /**
  * <h1>DtoOfCreateLocation</h1>
  * <p>
@@ -22,13 +24,21 @@ import lombok.Getter;
 public class DtoOfCreateLocation {
 
     /**
+     * 위치 이름
+     */
+    @NotNull
+    private String locationName;
+
+    /**
      * 생성을 위한 위도
      */
+    @NotNull
     private double latitude;
 
     /**
      * 생성을 위한 경도
      */
+    @NotNull
     private double longitude;
 
     /**

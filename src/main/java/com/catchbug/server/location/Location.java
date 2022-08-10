@@ -1,5 +1,7 @@
 package com.catchbug.server.location;
 
+import com.catchbug.server.member.Member;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -70,4 +72,21 @@ public class Location {
      */
     @Column(name = "DETAIL_LOCATION")
     private String detailLocation;
+
+    /**
+     * 해당 주소를 등록한 사용자
+     */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "USER_ID")
+    private Member member;
+
+    /**
+     * 주소 등록 요청을 보낸 사용자를 등록하는 메소드
+     * @param member : 해당 주소 등록을 요청한 사용자
+     */
+    public void updateMember(Member member){
+        this.member = member;
+    }
+
+
 }

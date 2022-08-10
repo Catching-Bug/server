@@ -1,6 +1,7 @@
 package com.catchbug.server.member;
 
 import com.catchbug.server.board.Board;
+import com.catchbug.server.location.Location;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -69,6 +70,12 @@ public class Member {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "BOARD_ID")
     private Board hiredBoard;
+
+    /**
+     * 사용자가 등록한 위치
+     */
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+    private List<Location> locations;
 
 
 

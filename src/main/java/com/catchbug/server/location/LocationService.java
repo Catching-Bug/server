@@ -47,7 +47,7 @@ public class LocationService {
 
         Location locationEntity = locationRepository.save(location);
 
-        // todo 멤버에 위치 등록필요
+        locationEntity.updateMember(memberEntity);
 
         return DtoOfCreatedLocation.builder()
                 .detailLocation(locationEntity.getDetailLocation())
@@ -58,4 +58,6 @@ public class LocationService {
                 .town(locationEntity.getTown())
                 .build();
     }
+
+
 }

@@ -7,14 +7,11 @@ import com.catchbug.server.member.Member;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
@@ -26,9 +23,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @MockBean(JpaMetamodelMappingContext.class)
 @WithMockUser
-@ExtendWith(SpringExtension.class)
-@EnableConfigurationProperties(value = JwtProperties.class)
-@TestPropertySource("classpath:application-test.yml")
 @WebMvcTest(controllers = JwtController.class)
 public class JwtControllerTest {
 
@@ -41,18 +35,13 @@ public class JwtControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @Autowired
-    private JwtProperties jwtProperties;
-
     @DisplayName("정상적으로 refresh 된 토큰이 response 된다.")
     @Test
     public void response_OnRefresh() throws Exception{
 
         Member member = setUpMember();
         Long validTime = 30 * 60 * 1000L;
-        log.info("jwt proper = {}", jwtProperties.getRefreshTokenKey());
-
-        String accessToken = setUpToken(member, validTime, JwtProviderTest.TokenType.ACCESS, jwtProperties.getAccessTokenKey());
+        String accessToken = setUpToken(member, validTime, JwtProviderTest.TokenType.ACCESS);
 
         //given
         DtoOfJwt dtoOfJwt = DtoOfJwt.builder()

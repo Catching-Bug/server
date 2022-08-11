@@ -1,6 +1,7 @@
 package com.catchbug.server.jwt.util;
 
 import com.catchbug.server.jwt.dto.DtoOfUserDataFromJwt;
+import com.catchbug.server.jwt.properties.JwtProperties;
 import com.catchbug.server.member.Gender;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -42,8 +43,10 @@ public class JwtProvider {
     public void authenticateAccessToken(String accessToken){
 
 
+
+    public void authenticateAccessToken(String accessToken){
         Jwts.parser()
-                .setSigningKey(accessTokenKey.getBytes(StandardCharsets.UTF_8))
+                .setSigningKey(jwtProperties.getAccessTokenKey().getBytes(StandardCharsets.UTF_8))
                 .parseClaimsJws(accessToken)
                 .getBody();
     }
@@ -53,7 +56,7 @@ public class JwtProvider {
      * @param refreshToken : 요청자로부터 받은 리프레시 토큰
      */
     public void authenticateRefreshToken(String refreshToken){
-        Jwts.parser().setSigningKey(refreshTokenKey.getBytes(StandardCharsets.UTF_8)).parseClaimsJws(refreshToken).getBody();
+        Jwts.parser().setSigningKey(jwtProperties.getRefreshTokenKey().getBytes(StandardCharsets.UTF_8)).parseClaimsJws(refreshToken).getBody();
     }
 
     /**
@@ -63,7 +66,7 @@ public class JwtProvider {
      */
     public DtoOfUserDataFromJwt getUserData(String accessToken){
 
-        Claims claims = getClaims(accessToken, this.accessTokenKey);
+        Claims claims = getClaims(accessToken, jwtProperties.getAccessTokenKey());
         Gender gender = Gender.NONE;
         if(claims.get("gender").equals("male")){
             gender = Gender.MALE;
@@ -90,9 +93,8 @@ public class JwtProvider {
      */
     public boolean checkRenewRefreshToken(String refreshToken, Long time){
 
-
         Instant now = Instant.now();
-        Instant expiredTime = getClaims(refreshToken, this.refreshTokenKey).getExpiration().toInstant();
+        Instant expiredTime = getClaims(refreshToken, jwtProperties.getRefreshTokenKey()).getExpiration().toInstant();
 
         long diffTIme = now.until(expiredTime, ChronoUnit.DAYS);
 

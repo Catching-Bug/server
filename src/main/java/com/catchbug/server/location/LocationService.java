@@ -3,9 +3,13 @@ package com.catchbug.server.location;
 import com.catchbug.server.jwt.model.AuthUser;
 import com.catchbug.server.location.dto.DtoOfCreateLocation;
 import com.catchbug.server.location.dto.DtoOfCreatedLocation;
+import com.catchbug.server.location.dto.DtoOfDeleteLocation;
+import com.catchbug.server.location.exception.NotFoundLocationException;
+import com.catchbug.server.location.exception.NotMatchException;
 import com.catchbug.server.member.Member;
 import com.catchbug.server.member.MemberService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 /**
  * <h1>LocationService</h1>
@@ -20,6 +24,7 @@ import org.springframework.stereotype.Service;
  * @see com.catchbug.server.location.LocationRepository
  * @author younghoCha
  */
+
 @RequiredArgsConstructor
 @Service
 public class LocationService {
@@ -59,6 +64,24 @@ public class LocationService {
                 .region(locationEntity.getRegion())
                 .town(locationEntity.getTown())
                 .build();
+    }
+
+    /**
+     * 위치정보 삭제 메서드
+     * @param memberId : 요청자 id
+     * @param dtoOfDeleteLocation : 삭제하려는 위치정보 dto
+     */
+    public void deleteLocation(Long memberId, DtoOfDeleteLocation dtoOfDeleteLocation){
+        Location location = locationRepository.findById(dtoOfDeleteLocation.getId())
+                .orElseThrow(() -> new NotFoundLocationException("해당 위치 정보를 찾을 수 없습니다."));
+
+        if(memberId == location.getMember().getId()){
+            locationRepository.delete(location);
+            return;
+        }
+
+        throw new NotMatchException("해당 위치정보를 삭제할 수 없습니다.");
+
     }
 
 

@@ -1,8 +1,13 @@
 package com.catchbug.server.member;
 
+import com.catchbug.server.location.Location;
+import com.catchbug.server.member.dto.DtoOfGetLocation;
 import com.catchbug.server.oauth2.dto.DtoOfUserProfile;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * <h1>MemberService</h1>
@@ -75,4 +80,33 @@ public class MemberService {
 
         return member;
     }
+
+    /**
+     * 사용자가 지정한 위치 정보 리스트를 리턴하는 메소드
+     * @param id : 요청자 id
+     * @return : 요청자가 사전에 등록한 위치정보 리스트 dto, 사전에 등록한 위치정보가 없으면 null
+     */
+    public List<DtoOfGetLocation> getMemberLocation(Long id){
+        Member memberEntity = getMember(id);
+
+        if(memberEntity.getLocations() == null){
+            return null;
+        }
+
+        return memberEntity.getLocations().stream().map(location ->
+                DtoOfGetLocation.builder()
+                        .locationName(location.getLocationName())
+                        .detailLocation(location.getDetailLocation())
+                        .city(location.getCity())
+                        .town(location.getTown())
+                        .latitude(location.getLatitude())
+                        .longitude(location.getLongitude())
+                        .region(location.getRegion())
+                        .build())
+                .collect(Collectors.toList());
+
+    }
+
+
+
 }

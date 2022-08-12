@@ -12,7 +12,10 @@ import com.catchbug.server.member.MemberService;
 import com.catchbug.server.member.dto.DtoOfGetLocation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -75,7 +78,7 @@ public class LocationService {
     /**
      * 위치정보 삭제 메서드
      * @param memberId : 요청자 id
-     * @param dtoOfDeleteLocation : 삭제하려는 위치정보 dto
+     * @param locationId : 삭제하려는 위치정보객체 id
      */
     public void deleteLocation(Long memberId, Long locationId){
         Location location = locationRepository.findById(locationId)
@@ -106,6 +109,7 @@ public class LocationService {
 
         return locationList.stream()
                 .map(v -> DtoOfGetLocation.builder()
+                        .id(v.getId())
                         .detailLocation(v.getDetailLocation())
                         .locationName(v.getLocationName())
                         .town(v.getTown())
@@ -116,6 +120,27 @@ public class LocationService {
                         .build())
                 .collect(Collectors.toList());
     }
+
+    public DtoOfGetLocation getLocation(Long memberId, Long locationId){
+        Member memberEntity = memberService.getMember(memberId);
+
+        Location locationEntity = locationRepository.findById(locationId).orElseThrow(
+                () -> new NotFoundLocationException("해당하는 위치정보를 찾을 수 없습니다."));
+
+        return DtoOfGetLocation.builder()
+                .id(locationEntity.getId())
+                .detailLocation(locationEntity.getDetailLocation())
+                .town(locationEntity.getTown())
+                .region(locationEntity.getRegion())
+                .city(locationEntity.getCity())
+                .detailLocation(locationEntity.getDetailLocation())
+                .locationName(locationEntity.getLocationName())
+                .longitude(locationEntity.getLongitude())
+                .latitude(locationEntity.getLatitude())
+                .build();
+
+    }
+
 
 
 }

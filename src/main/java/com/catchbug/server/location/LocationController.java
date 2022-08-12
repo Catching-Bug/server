@@ -77,4 +77,18 @@ public class LocationController {
 
         return new ResponseEntity(response, HttpStatus.OK);
     }
+
+    /**
+     * 위치 정보 1개를 조회하기 위한 메소드
+     * @param authUser : 요청자 Authentication 객체
+     * @param id : 요청자가 조회하려는 위치 정보 객체
+     * @return 조회된 위치 정보 객체 데이터가 있는 ResponseEntity
+     */
+    @GetMapping("/api/location/{id}")
+    public ResponseEntity getLocation(AuthUser authUser, @PathVariable Long id){
+
+        DtoOfGetLocation dtoOfGetLocation = locationService.getLocation(Long.parseLong(authUser.getId()), id);
+        Response response = Response.builder().content(dtoOfGetLocation).message("성공적으로 조회되었습니다.").build();
+        return new ResponseEntity(response, HttpStatus.OK);
+    }
 }

@@ -190,6 +190,44 @@ public class LocationServiceTest {
 
     }
 
+    @DisplayName("위치 정보 1개를 성공적으로 조회한다.")
+    @Test
+    public void get_location_OnSuccess() throws Exception{
+
+        //given
+        Location location = setUpLocation();
+        given(memberService.getMember(anyLong())).willReturn(mockMember);
+        given(locationRepository.findById(anyLong())).willReturn(Optional.of(location));
+        //when
+        DtoOfGetLocation actualResult = locationService.getLocation(1L, 1L);
+        //then
+
+        Assertions.assertEquals(location.getLocationName(), actualResult.getLocationName());
+        Assertions.assertEquals(location.getDetailLocation(), actualResult.getDetailLocation());
+        Assertions.assertEquals(location.getTown(), actualResult.getTown());
+        Assertions.assertEquals(location.getCity(), actualResult.getCity());
+        Assertions.assertEquals(location.getLongitude(), actualResult.getLongitude());
+        Assertions.assertEquals(location.getLatitude(), actualResult.getLatitude());
+        Assertions.assertEquals(location.getId(), actualResult.getId());
+        Assertions.assertEquals(location.getRegion(), actualResult.getRegion());
+
+    }
+
+    @DisplayName("위치 정보를 찾을 수 없을 때, NotFoundLocationException 이 발생한다.")
+    @Test
+    public void get_location_OnNotFoundLocationException() throws Exception{
+    
+        //given
+        given(locationRepository.findById(anyLong())).willReturn(Optional.ofNullable(null));
+        given(memberService.getMember(anyLong())).willReturn(setUpMember());
+        //when
+        //then
+        Assertions.assertThrows(NotFoundLocationException.class, () ->{
+            locationService.getLocation(1L, 1L);
+        });
+        
+    }
+    
 
     
 

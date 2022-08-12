@@ -7,6 +7,11 @@ import lombok.Getter;
 @Builder
 public class DtoOfGetLocation {
 
+
+    /**
+     * 사용자 위치 정보 id(pk)
+     */
+    private Long id;
     /**
      * 위치정보 이름
      */

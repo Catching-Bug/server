@@ -4,13 +4,19 @@ import com.catchbug.server.jwt.model.AuthUser;
 import com.catchbug.server.location.dto.DtoOfCreateLocation;
 import com.catchbug.server.location.dto.DtoOfCreatedLocation;
 import com.catchbug.server.location.dto.DtoOfDeleteLocation;
+import com.catchbug.server.location.exception.NoInformationException;
 import com.catchbug.server.location.exception.NotFoundLocationException;
 import com.catchbug.server.location.exception.NotMatchException;
 import com.catchbug.server.member.Member;
 import com.catchbug.server.member.MemberService;
+import com.catchbug.server.member.dto.DtoOfGetLocation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
 /**
  * <h1>LocationService</h1>
  * <p>
@@ -82,6 +88,33 @@ public class LocationService {
 
         throw new NotMatchException("해당 위치정보를 삭제할 수 없습니다.");
 
+    }
+
+    /**
+     * 사용자가 사전에 등록한 위치 정보를 조회하는 메소드
+     * @param memberId : 요청자 id
+     * @return : 요청자가 사전에 등록한 위치정보 객체 리스트 dto
+     */
+    public List<DtoOfGetLocation> getLocations(Long memberId){
+        Member memberEntity = memberService.getMember(memberId);
+
+        List<Location> locationList = memberEntity.getLocations();
+
+        if(locationList == null){
+            throw new NoInformationException("사전에 등록한 위치 정보가 없습니다.");
+        }
+
+        return locationList.stream()
+                .map(v -> DtoOfGetLocation.builder()
+                        .detailLocation(v.getDetailLocation())
+                        .locationName(v.getLocationName())
+                        .town(v.getTown())
+                        .region(v.getRegion())
+                        .city(v.getCity())
+                        .latitude(v.getLatitude())
+                        .longitude(v.getLongitude())
+                        .build())
+                .collect(Collectors.toList());
     }
 
 

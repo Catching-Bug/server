@@ -4,10 +4,12 @@ import com.catchbug.server.jwt.model.AuthUser;
 import com.catchbug.server.location.dto.DtoOfCreateLocation;
 import com.catchbug.server.location.dto.DtoOfCreatedLocation;
 import com.catchbug.server.location.dto.DtoOfDeleteLocation;
+import com.catchbug.server.location.exception.NoInformationException;
 import com.catchbug.server.location.exception.NotFoundLocationException;
 import com.catchbug.server.location.exception.NotMatchException;
 import com.catchbug.server.member.Member;
 import com.catchbug.server.member.MemberService;
+import com.catchbug.server.member.dto.DtoOfGetLocation;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -17,7 +19,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static com.catchbug.server.jwt.util.JwtFactoryTest.setUpMember;
 import static org.mockito.ArgumentMatchers.any;
@@ -38,6 +43,9 @@ public class LocationServiceTest {
 
     @MockBean
     private MemberService memberService;
+
+    @MockBean
+    private Member mockMember;
 
     @DisplayName("위치 등록 테스트")
     @Test
@@ -129,6 +137,60 @@ public class LocationServiceTest {
         });
     }
 
+    @DisplayName("유저가 사전 등록한 위치 정보들을 정상적으로 조회한다.")
+    @Test
+    public void get_locations() throws Exception{
+
+        //given
+        List<Location> locationList = new ArrayList<>();
+        locationList.add(setUpLocation());
+        locationList.add(setUpLocation());
+        locationList.add(setUpLocation());
+
+        given(memberService.getMember(anyLong())).willReturn(mockMember);
+        given(mockMember.getLocations()).willReturn(locationList);
+
+        List<DtoOfGetLocation> expectedResult = locationList.stream().map(v ->
+                DtoOfGetLocation.builder()
+                        .locationName(v.getLocationName())
+                        .city(v.getCity())
+                        .town(v.getTown())
+                        .detailLocation(v.getDetailLocation())
+                        .latitude(v.getLatitude())
+                        .longitude(v.getLongitude())
+                        .region(v.getRegion())
+                        .build()
+                ).collect(Collectors.toList());
+
+        //when
+        List<DtoOfGetLocation> actualResult = locationService.getLocations(1L);
+
+        //then
+        Assertions.assertEquals(expectedResult.size(), actualResult.size());
+        Assertions.assertEquals(expectedResult.get(0).getCity(), actualResult.get(0).getCity());
+        Assertions.assertEquals(expectedResult.get(0).getDetailLocation(), actualResult.get(0).getDetailLocation());
+        Assertions.assertEquals(expectedResult.get(1).getLatitude(), actualResult.get(1).getLatitude());
+        Assertions.assertEquals(expectedResult.get(2).getTown(), actualResult.get(1).getTown());
+
+    }
+    @DisplayName("유저가 사전 등록한 위치 정보가 없는 경우 NoInformationException 예외가 발생한다.")
+    @Test
+    public void get_locations_OnNoInformationException() throws Exception{
+
+        //given
+        given(memberService.getMember(anyLong())).willReturn(mockMember);
+        given(mockMember.getLocations()).willReturn(null);
+
+        //when
+        //then
+        Assertions.assertThrows(NoInformationException.class, ()->
+        {
+            locationService.getLocations(1L);
+        });
+
+    }
+
+
     
 
     public static Location setUpLocation(){
@@ -145,6 +207,8 @@ public class LocationServiceTest {
                 .locationName("locationName")
                 .build();
     }
+
+
     
 
 }

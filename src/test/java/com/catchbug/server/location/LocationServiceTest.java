@@ -100,7 +100,7 @@ public class LocationServiceTest {
 
         //then
         Assertions.assertDoesNotThrow(()->{
-            locationService.deleteLocation(1L, dto);
+            locationService.deleteLocation(1L, 1L);
         });
     }
 
@@ -118,7 +118,7 @@ public class LocationServiceTest {
         //then
 
         Assertions.assertThrows(NotMatchException.class, () -> {
-            locationService.deleteLocation(2L, dto);
+            locationService.deleteLocation(2L, 1L);
         });
 
     }
@@ -133,7 +133,7 @@ public class LocationServiceTest {
         given(locationRepository.findById(anyLong())).willReturn(Optional.ofNullable(null));
         //then
         Assertions.assertThrows(NotFoundLocationException.class, () -> {
-            locationService.deleteLocation(1L, DtoOfDeleteLocation.builder().id(1L).build());
+            locationService.deleteLocation(1L, 1L);
         });
     }
 

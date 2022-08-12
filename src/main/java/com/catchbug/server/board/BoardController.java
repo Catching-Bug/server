@@ -69,8 +69,6 @@ public class BoardController {
      * @return ResponseEntity : validation error 시 응답 메세지
      */
     public ResponseEntity<?> getResponseEntityFromBindingException(BindingResult bindingResult){
-
-        Response response = Response.builder().content(null).message("잘못된 요청 형식입니다.").build();
-        return ResponseEntity.badRequest().body(response);
+        return new ResponseEntity(Response.builder().content(null).message("잘못된 요청 형식입니다.").build(), HttpStatus.BAD_REQUEST);
     }
 }

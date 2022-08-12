@@ -77,8 +77,8 @@ public class LocationService {
      * @param memberId : 요청자 id
      * @param dtoOfDeleteLocation : 삭제하려는 위치정보 dto
      */
-    public void deleteLocation(Long memberId, DtoOfDeleteLocation dtoOfDeleteLocation){
-        Location location = locationRepository.findById(dtoOfDeleteLocation.getId())
+    public void deleteLocation(Long memberId, Long locationId){
+        Location location = locationRepository.findById(locationId)
                 .orElseThrow(() -> new NotFoundLocationException("해당 위치 정보를 찾을 수 없습니다."));
 
         if(memberId == location.getMember().getId()){

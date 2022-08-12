@@ -1,13 +1,14 @@
 package com.catchbug.server.location;
 
+import com.catchbug.server.common.response.Response;
 import com.catchbug.server.jwt.model.AuthUser;
 import com.catchbug.server.location.dto.DtoOfCreateLocation;
+import com.catchbug.server.location.dto.DtoOfCreatedLocation;
 import com.catchbug.server.member.dto.DtoOfGetLocation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -36,8 +37,44 @@ public class LocationController {
     @GetMapping("/api/locations")
     public ResponseEntity<?> getLocations(AuthUser authUser){
         List<DtoOfGetLocation> locationList = locationService.getLocations(Long.parseLong(authUser.getId()));
-
-        return ResponseEntity.ok().body(locationList);
+        Response response = Response.builder()
+                .content(locationList)
+                .message("성공적으로 조회되었습니다.")
+                .build();
+        return new ResponseEntity(response, HttpStatus.OK);
     }
 
+    /**
+     * 위치 정보 삭제 메소드
+     * @param authUser : 요청자 Authentication 객체
+     * @param id : 삭제하려는 위치정보 id
+     * @return : 삭제 성공 시 요청자에게 응답될 ResponseEntity
+     */
+    @DeleteMapping("/api/location/{id}")
+    public ResponseEntity<?> deleteLocation(AuthUser authUser, @PathVariable Long id){
+        locationService.deleteLocation(Long.parseLong(authUser.getId()), id);
+        Response response = Response.builder()
+                .content(null)
+                .message("성공적으로 삭제되었습니다.")
+                .build();
+        return new ResponseEntity(response, HttpStatus.OK);
+    }
+
+    /**
+     * 위치 정보 생성 메소드
+     * @param authUser : 요청자 Authentication 객체
+     * @param dtoOfCreateLocation : 요청자가 생성하려는 위치 정보 객체
+     * @return 생성된 위치 정보 객체 dto
+     */
+    @PostMapping("/api/location")
+    public ResponseEntity<?> createLocation(AuthUser authUser, @RequestBody DtoOfCreateLocation dtoOfCreateLocation){
+        DtoOfCreatedLocation dtoOfCreatedLocation = locationService.saveLocation(authUser, dtoOfCreateLocation);
+
+        Response response = Response.builder()
+                .content(dtoOfCreatedLocation)
+                .message("성공적으로 등록되었습니다.")
+                .build();
+
+        return new ResponseEntity(response, HttpStatus.OK);
+    }
 }

@@ -2,6 +2,8 @@ package com.catchbug.server.member;
 
 import com.catchbug.server.location.Location;
 import com.catchbug.server.member.dto.DtoOfGetLocation;
+import com.catchbug.server.member.dto.DtoOfGetMember;
+import com.catchbug.server.member.exception.NotFoundMemberException;
 import com.catchbug.server.oauth2.dto.DtoOfUserProfile;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
@@ -199,6 +201,53 @@ public class MemberServiceTest {
     }
 
 
+    @DisplayName("회원 1명을 조회한다.")
+    @Test
+    public void get_Member_OnSuccess() throws Exception{
+
+        //given
+        Member member = setUpMember();
+        given(memberRepository.findById(anyLong())).willReturn(Optional.of(member));
+
+        //when
+        DtoOfGetMember actualResult = memberService.getMemberInformation(1L);
+
+        //then
+        Assertions.assertEquals(member.getNickname(), actualResult.getNickname());
+        Assertions.assertEquals(member.getGender(), actualResult.getGender());
+
+    }
+    @DisplayName("Member 데이터를 찾을 수 없을 시, NotFoundMemberException 발생")
+    @Test
+    public void get_member_OnNotFoundMemberException() throws Exception{
+
+        //given
+        //mocking
+        given(memberRepository.findById(anyLong())).willReturn(Optional.ofNullable(null));
+
+        //when
+        //then
+        Assertions.assertThrows(NotFoundMemberException.class, ()-> {
+            memberService.getMember(1L);
+        });
+
+    }
+
+    
+    @DisplayName("회원 정보 조회 시, 회원 데이터를 찾을 수 없을 경우 NotFoundMemberException 발생")
+    @Test
+    public void get_memberInformation_OnNotFoundMemberException() throws Exception{
+    
+        //given
+        given(memberRepository.findById(anyLong())).willReturn(Optional.ofNullable(null));
+
+        //when
+        //then
+        Assertions.assertThrows(NotFoundMemberException.class, () -> {
+            memberService.getMemberInformation(1L);
+        });
+    }
+    
 
 
 

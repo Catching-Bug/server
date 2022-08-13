@@ -2,7 +2,18 @@ package com.catchbug.server.member.dto;
 
 import lombok.Builder;
 import lombok.Getter;
-
+/**
+ * <h1>DtoOfGetLocation</h1>
+ * <p>
+ *     Dto Of Get Location
+ * </p>
+ * <p>
+ *     사용자의 위치 정보를 전달해주기위한 DTO
+ * </p>
+ *
+ * @see com.catchbug.server.member.MemberService
+ * @author younghoCha
+ */
 @Getter
 @Builder
 public class DtoOfGetLocation {

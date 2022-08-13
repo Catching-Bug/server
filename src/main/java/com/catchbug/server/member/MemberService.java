@@ -2,6 +2,8 @@ package com.catchbug.server.member;
 
 import com.catchbug.server.location.Location;
 import com.catchbug.server.member.dto.DtoOfGetLocation;
+import com.catchbug.server.member.dto.DtoOfGetMember;
+import com.catchbug.server.member.exception.NotFoundMemberException;
 import com.catchbug.server.oauth2.dto.DtoOfUserProfile;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -76,7 +78,8 @@ public class MemberService {
      * @return Member : 영속화 상태인 Member Entity
      */
     public Member getMember(Long id){
-        Member member = memberRepository.findById(id).get();
+        Member member = memberRepository.findById(id)
+                .orElseThrow(() -> new NotFoundMemberException("해당하는 회원을 찾을 수 없습니다."));
 
         return member;
     }
@@ -104,6 +107,22 @@ public class MemberService {
                         .region(location.getRegion())
                         .build())
                 .collect(Collectors.toList());
+
+    }
+
+    /**
+     * 멤버의 정보를 조회하는 메소드
+     * @param id : 조회하려는 멤버 id
+     * @return : 멤버에 대한 정보 dto
+     */
+    public DtoOfGetMember getMemberInformation(Long id){
+
+        Member memberEntity = getMember(id);
+
+        return DtoOfGetMember.builder()
+                .nickname(memberEntity.getNickname())
+                .Gender(memberEntity.getGender())
+                .build();
 
     }
 

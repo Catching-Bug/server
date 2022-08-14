@@ -29,7 +29,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Board extends BoardBaseEntity {
-
+    // 주석 추가
     /**
      * 게시판 글 ID(primary key)
      */

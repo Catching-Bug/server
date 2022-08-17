@@ -1,6 +1,5 @@
 package com.catchbug.server.member;
 
-import com.catchbug.server.location.Location;
 import com.catchbug.server.member.dto.DtoOfGetLocation;
 import com.catchbug.server.member.dto.DtoOfGetMember;
 import com.catchbug.server.member.exception.NotFoundMemberException;

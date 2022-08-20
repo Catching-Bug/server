@@ -1,8 +1,10 @@
 package com.catchbug.server.board;
 
+import com.catchbug.server.board.dto.DtoOfGetCityCount;
 import com.catchbug.server.board.dto.DtoOfGetRegionCount;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
@@ -29,4 +31,14 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
             "from Board b " +
             "group by b.region")
     List<DtoOfGetRegionCount> getRegionCount();
+
+    @Query(value = "select " +
+            "b.city as cityName, " +
+            "count(b) as count, " +
+            "avg(b.latitude) as latitude, " +
+            "avg(b.longitude) as longitude " +
+            "from Board b " +
+            "where b.city = :cityName " +
+            "group by b.city")
+    List<DtoOfGetCityCount> getCityCount(@Param("cityName") String cityName);
 }

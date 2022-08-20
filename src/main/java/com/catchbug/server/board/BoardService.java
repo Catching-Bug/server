@@ -120,10 +120,24 @@ public class BoardService {
     }
 
 
+    /**
+     * Region Depth 단위로 Count 를 조회하는 메서드
+     * @return 조회 결과 Dto
+     */
     public List<DtoOfGetRegionCount> getRegionCount(){
         List<DtoOfGetRegionCount> dtoOfGetRegionCount = boardRepository.getRegionCount();
 
         return dtoOfGetRegionCount;
+    }
+
+    /**
+     * City Depth 단위로 Count 를 조회하는 메서드
+     * @return 조회 결과 Dto
+     */
+    public List<DtoOfGetCityCount> getCityCount(String cityName){
+        List<DtoOfGetCityCount> dtoOfGetCityCountList = boardRepository.getCityCount(cityName);
+
+        return dtoOfGetCityCountList;
     }
 
 }

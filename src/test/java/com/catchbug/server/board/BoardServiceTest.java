@@ -1,9 +1,6 @@
 package com.catchbug.server.board;
 
-import com.catchbug.server.board.dto.DtoOfCreateBoard;
-import com.catchbug.server.board.dto.DtoOfCreatedBoard;
-import com.catchbug.server.board.dto.DtoOfGetBoard;
-import com.catchbug.server.board.dto.DtoOfGetRegionCount;
+import com.catchbug.server.board.dto.*;
 import com.catchbug.server.board.exception.NotCreateException;
 import com.catchbug.server.board.exception.NotFoundBoardException;
 import com.catchbug.server.member.Member;
@@ -173,10 +170,6 @@ public class BoardServiceTest {
     public void get_boards_count(){
 
         //given & mocking
-        int expectedCount = 10;
-        String expectedName = "서울특별시";
-        double expectedLatitude = 123123.123123;
-        double expectedLongitude = 321321.321321;
         List<DtoOfGetRegionCount> dtoOfGetRegionCountList = new ArrayList<>();
         given(boardRepository.getRegionCount()).willReturn(dtoOfGetRegionCountList);
         //when
@@ -191,14 +184,15 @@ public class BoardServiceTest {
     @Test
     public void get_cities_count() throws Exception{
 
-//        //given & mocking
-//        int expectedCount = 10;
-//        String expectedName = "창원시";
-//
-//        given();
-//        //when
-//        List<>
-//        //then
+        //given & mocking
+        List<DtoOfGetCityCount> dtoOfGetCityCountList = new ArrayList<>();
+        given(boardRepository.getCityCount(anyString())).willReturn(dtoOfGetCityCountList);
+        //when
+        List<DtoOfGetCityCount> actualResult = boardService.getCityCount("동작구");
+
+        //then
+        Assertions.assertNotNull(actualResult);
+
 
     }
 

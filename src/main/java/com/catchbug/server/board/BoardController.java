@@ -78,10 +78,10 @@ public class BoardController {
     }
 
     @GetMapping("/api/cities/count")
-    public ResponseEntity getCityCount(@RequestParam String cityName){
+    public ResponseEntity getCityCount(@RequestParam String regionName){
 
         List<DtoOfGetCityCount> dtoOfGetCityCountList =
-                boardService.getCityCount(cityName);
+                boardService.getCityCount(regionName);
 
         Response response = Response.builder()
                 .content(dtoOfGetCityCountList)

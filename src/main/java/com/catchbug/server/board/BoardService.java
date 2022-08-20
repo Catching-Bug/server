@@ -132,10 +132,11 @@ public class BoardService {
 
     /**
      * City Depth 단위로 Count 를 조회하는 메서드
+     * @param regionName : 조회하려는 지역 이름
      * @return 조회 결과 Dto
      */
-    public List<DtoOfGetCityCount> getCityCount(String cityName){
-        List<DtoOfGetCityCount> dtoOfGetCityCountList = boardRepository.getCityCount(cityName);
+    public List<DtoOfGetCityCount> getCityCount(String regionName){
+        List<DtoOfGetCityCount> dtoOfGetCityCountList = boardRepository.getCityCount(regionName);
 
         return dtoOfGetCityCountList;
     }

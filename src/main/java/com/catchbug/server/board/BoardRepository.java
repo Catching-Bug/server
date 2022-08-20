@@ -38,7 +38,7 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
             "avg(b.latitude) as latitude, " +
             "avg(b.longitude) as longitude " +
             "from Board b " +
-            "where b.city = :cityName " +
+            "where b.region = :regionName " +
             "group by b.city")
-    List<DtoOfGetCityCount> getCityCount(@Param("cityName") String cityName);
+    List<DtoOfGetCityCount> getCityCount(@Param("regionName") String regionName);
 }

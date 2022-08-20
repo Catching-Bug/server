@@ -2,6 +2,7 @@ package com.catchbug.server.board;
 
 import com.catchbug.server.board.dto.DtoOfCreateBoard;
 import com.catchbug.server.board.dto.DtoOfCreatedBoard;
+import com.catchbug.server.board.dto.DtoOfGetCityCount;
 import com.catchbug.server.board.dto.DtoOfGetRegionCount;
 import com.catchbug.server.common.response.Response;
 import com.catchbug.server.jwt.model.AuthUser;
@@ -13,10 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -79,6 +77,21 @@ public class BoardController {
         return new ResponseEntity(response, HttpStatus.OK);
     }
 
+    @GetMapping("/api/cities/count")
+    public ResponseEntity getCityCount(@RequestParam String cityName){
+
+        List<DtoOfGetCityCount> dtoOfGetCityCountList =
+                boardService.getCityCount(cityName);
+
+        Response response = Response.builder()
+                .content(dtoOfGetCityCountList)
+                .message("City 정보를 정상적으로 조회하였습니다.")
+                .build();
+
+        return new ResponseEntity(response, HttpStatus.OK);
+
+    }
+
     /**
      * check validation
      * @param bindingResult
@@ -86,7 +99,9 @@ public class BoardController {
      */
     public ResponseEntity<?> getResponseEntityFromBindingException(BindingResult bindingResult){
         return new ResponseEntity(Response.builder().content(null).message("잘못된 요청 형식입니다.").build(), HttpStatus.BAD_REQUEST);
+
     }
+
 
 
 }

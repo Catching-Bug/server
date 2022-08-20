@@ -3,6 +3,7 @@ package com.catchbug.server.board;
 import com.catchbug.server.board.dto.DtoOfCreateBoard;
 import com.catchbug.server.board.dto.DtoOfCreatedBoard;
 import com.catchbug.server.board.dto.DtoOfGetBoard;
+import com.catchbug.server.board.dto.DtoOfGetRegionCount;
 import com.catchbug.server.board.exception.NotCreateException;
 import com.catchbug.server.board.exception.NotFoundBoardException;
 import com.catchbug.server.member.Member;
@@ -16,11 +17,12 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import static com.catchbug.server.jwt.util.JwtFactoryTest.setUpMember;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 
 @MockBean(JpaMetamodelMappingContext.class)
@@ -43,32 +45,26 @@ public class BoardServiceTest {
     @DisplayName("방이 정상적으로 생성되어야 한다.")
     @Test
     public void create_room_OnSuccess() throws Exception{
-
         //given
         Member member = setUpMember();
         DtoOfCreateBoard dtoOfCreateBoard = DtoOfCreateBoard.builder()
                 .title("테스트제목")
                 .content("테스트내용")
                 .build();
-
         Board board = Board.builder()
                 .id(1L).build();
         given(boardRepository.save(any())).willReturn(board);
         given(memberService.getMember(member.getId())).willReturn(member);
         given(memberEntity.getLatestBoard()).willReturn(null);
-
         //when
         DtoOfCreatedBoard createdBoard = boardService.createBoard(member.getId(), dtoOfCreateBoard);
-
         //then
         Assertions.assertEquals(1L, createdBoard.getRoomId());
-
     }
 
     @DisplayName("사용자의 최근 게시판이 10분이 지났으면 true 가 리턴되어야 한다.")
     @Test
     public void check_Creatable_OnFalse() throws Exception{
-
         //given
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime mockTime = LocalDateTime.now().minusMinutes(11L);
@@ -76,15 +72,12 @@ public class BoardServiceTest {
         given(memberEntity.getLatestBoard()).willReturn(mockTime);
         boolean actual = boardService.checkCreatable(memberEntity);
         //then
-
         Assertions.assertTrue(actual);
-
     }
 
     @DisplayName("사용자의 최근 게시판이 10분이 지났지 않았으면 false 가 리턴되어야 한다.")
     @Test
     public void check_Creatable_OnTrue() throws Exception{
-
         //given
         LocalDateTime mockTime = LocalDateTime.now().minusMinutes(3L);
         //when
@@ -99,7 +92,6 @@ public class BoardServiceTest {
     @DisplayName("사용자가 글을 쓴 적이 없으면 true 가 리턴되어야 한다.")
     @Test
     public void check_Creatable_OnNull() throws Exception{
-
         //given & when & mocking
         given(memberEntity.getLatestBoard()).willReturn(null);
         boolean actual = boardService.checkCreatable(memberEntity);
@@ -114,7 +106,6 @@ public class BoardServiceTest {
     public void check_NotCreateException() throws Exception{
 
         //given
-
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime mockTime = LocalDateTime.now().minusMinutes(9L);
         DtoOfCreateBoard dtoOfCreateBoard = DtoOfCreateBoard.builder()
@@ -126,22 +117,17 @@ public class BoardServiceTest {
         given(memberEntity.getLatestBoard()).willReturn(mockTime);
 
         //then
-
         Assertions.assertThrows(NotCreateException.class,() -> {
             boardService.createBoard(1L, dtoOfCreateBoard);
         });
-
     }
 
     @DisplayName("글이 정상적으로 조회되어야 한다.")
     @Test
     public void getBoardTest() throws Exception{
-
         //given
         Board boardEntity = setUpBoard();
-
         given(boardRepository.findById(anyLong())).willReturn(Optional.of(boardEntity));
-
         DtoOfGetBoard expectedBoard = DtoOfGetBoard.builder()
                 .creatorId(boardEntity.getHost().getId())
                 .creatorNickname(boardEntity.getHost().getNickname())
@@ -167,16 +153,12 @@ public class BoardServiceTest {
         Assertions.assertEquals(expectedBoard.getRoomContent(), actualBoard.getRoomContent());
         Assertions.assertEquals(expectedBoard.getRoomTitle(), actualBoard.getRoomTitle());
         Assertions.assertEquals(expectedBoard.getCreatorId(), actualBoard.getCreatorId());
-
     }
 
     @DisplayName("글이 존재하지 않는 경우에는 예외가 발생해야한다.")
     @Test
-    public void not_found_board_ExceptionTest() throws Exception{
-
-
+    public void not_found_board_ExceptionTest(){
         //given
-        Board boardEntity = setUpBoard();
         //mocking
         given(boardRepository.findById(anyLong())).willReturn(Optional.ofNullable(null));
         //when
@@ -184,9 +166,45 @@ public class BoardServiceTest {
         Assertions.assertThrows(NotFoundBoardException.class, () -> {
             boardService.getBoard(1L);
         });
+    }
 
+    @DisplayName("모든 지역의 board 개수를 정상적으로 출력한다.")
+    @Test
+    public void get_boards_count(){
+
+        //given & mocking
+        int expectedCount = 10;
+        String expectedName = "서울특별시";
+        double expectedLatitude = 123123.123123;
+        double expectedLongitude = 321321.321321;
+        List<DtoOfGetRegionCount> dtoOfGetRegionCountList = new ArrayList<>();
+        given(boardRepository.getRegionCount()).willReturn(dtoOfGetRegionCountList);
+        //when
+        List<DtoOfGetRegionCount> actualResult = boardService.getRegionCount();
+
+        //then
+        Assertions.assertNotNull(actualResult);
 
     }
+
+    @DisplayName("해당 city 의 개수를 정상적으로 출력한다.")
+    @Test
+    public void get_cities_count() throws Exception{
+
+//        //given & mocking
+//        int expectedCount = 10;
+//        String expectedName = "창원시";
+//
+//        given();
+//        //when
+//        List<>
+//        //then
+
+    }
+
+
+
+
 
     public static Board setUpBoard(){
         return Board.builder()

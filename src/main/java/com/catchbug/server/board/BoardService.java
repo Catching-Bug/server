@@ -1,8 +1,6 @@
 package com.catchbug.server.board;
 
-import com.catchbug.server.board.dto.DtoOfCreateBoard;
-import com.catchbug.server.board.dto.DtoOfCreatedBoard;
-import com.catchbug.server.board.dto.DtoOfGetBoard;
+import com.catchbug.server.board.dto.*;
 import com.catchbug.server.board.exception.NotCreateException;
 import com.catchbug.server.board.exception.NotFoundBoardException;
 import com.catchbug.server.member.Member;
@@ -11,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * <h1>BoardService</h1>
@@ -119,4 +118,12 @@ public class BoardService {
                 .creatorId(boardEntity.getHost().getId())
                 .build();
     }
+
+
+    public List<DtoOfGetRegionCount> getRegionCount(){
+        List<DtoOfGetRegionCount> dtoOfGetRegionCount = boardRepository.getRegionCount();
+
+        return dtoOfGetRegionCount;
+    }
+
 }

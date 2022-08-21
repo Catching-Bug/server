@@ -6,10 +6,14 @@ import com.catchbug.server.board.exception.NotFoundBoardException;
 import com.catchbug.server.member.Member;
 import com.catchbug.server.member.MemberService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * <h1>BoardService</h1>
@@ -140,5 +144,42 @@ public class BoardService {
 
         return dtoOfGetCityCountList;
     }
+
+    /**
+     * Town Depth 단위로 Count 를 조회하는 메서드
+     * @param cityName : 조회하려는 지역 이름
+     * @return 조회 결과 Dto
+     */
+    public List<DtoOfGetTownCount> getTownCount(String cityName){
+        List<DtoOfGetTownCount> dtoOfGetTownCountList = boardRepository.getTownCount(cityName);
+
+
+        return dtoOfGetTownCountList;
+
+    }
+
+//    /**
+//     * Town 내의 게시글을 리스트로 받기위한 메서드
+//     * @param townName
+//     * @return
+//     */
+//    public DtoOfPage getTownBoards(String townName, Pageable pageable){
+//        System.out.println("---");
+//        Page<Board> boardPages = boardRepository.findAll(townName, pageable);
+//        System.out.println("---");
+//
+//        DtoOfPage dto = DtoOfPage.builder()
+//                .dtoOfBoardList(boardPages.getContent().stream()
+//                        .map(v -> DtoOfBoard.builder()
+//                                .content(v.getContent())
+//                                .title(v.getTitle())
+//                                .nickName(v.getHost().getNickname())
+//                                .build()).collect(Collectors.toList()))
+//                .offset(boardPages.getPageable().getOffset())
+//                .size(boardPages.getSize())
+//                .build();
+//
+//        return dto;
+//    }
 
 }

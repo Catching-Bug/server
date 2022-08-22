@@ -253,7 +253,7 @@ public class BoardServiceTest {
                 .build();
         given(boardRepository.findAllByTown(anyString(), any())).willReturn(townBoardPage);
         //when
-        DtoOfGetTownBoards actualResult = boardService.getTownBoards("상원동", null);
+        DtoOfGetTownBoards actualResult = boardService.getTownBoards("상원동", PageRequest.of(10, 10));
         DtoOfBoard actualBoards = actualResult.getDtoOfBoardList().get(0);
         //then
         Assertions.assertNotNull(actualResult);
@@ -261,6 +261,8 @@ public class BoardServiceTest {
         Assertions.assertEquals(board.getContent(), actualBoards.getContent());
         Assertions.assertEquals(board.getHost().getNickname(), actualBoards.getNickName());
         Assertions.assertEquals(board.getId(), actualBoards.getId());
+        Assertions.assertEquals(10, actualResult.getSize());
+        Assertions.assertEquals(10, actualResult.getPage());
     }
 
 

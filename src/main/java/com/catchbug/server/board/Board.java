@@ -3,6 +3,7 @@ package com.catchbug.server.board;
 import com.catchbug.server.board.auditing.BoardBaseEntity;
 import com.catchbug.server.board.dto.DtoOfUpdateBoard;
 import com.catchbug.server.member.Member;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -65,6 +66,7 @@ public class Board extends BoardBaseEntity {
     /**
      * 해당 방을 생성한 사용자 ID(pk)
      */
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "HOST_ID")
     private Member host;
@@ -72,8 +74,8 @@ public class Board extends BoardBaseEntity {
     /**
      * 해당 방에 배치된 사용자 id(pk)
      */
-    @OneToOne(mappedBy = "hiredBoard")
-    private Member employee;
+//    @OneToOne(mappedBy = "hiredBoard")
+//    private Member employee;
 
     /**
      * 도, 시

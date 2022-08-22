@@ -158,28 +158,27 @@ public class BoardService {
 
     }
 
-//    /**
-//     * Town 내의 게시글을 리스트로 받기위한 메서드
-//     * @param townName
-//     * @return
-//     */
-//    public DtoOfPage getTownBoards(String townName, Pageable pageable){
-//        System.out.println("---");
-//        Page<Board> boardPages = boardRepository.findAll(townName, pageable);
-//        System.out.println("---");
-//
-//        DtoOfPage dto = DtoOfPage.builder()
-//                .dtoOfBoardList(boardPages.getContent().stream()
-//                        .map(v -> DtoOfBoard.builder()
-//                                .content(v.getContent())
-//                                .title(v.getTitle())
-//                                .nickName(v.getHost().getNickname())
-//                                .build()).collect(Collectors.toList()))
-//                .offset(boardPages.getPageable().getOffset())
-//                .size(boardPages.getSize())
-//                .build();
-//
-//        return dto;
-//    }
+    /**
+     * Town 내의 게시글을 리스트로 받기위한 메서드
+     * @param townName
+     * @return
+     */
+    public DtoOfGetTownBoards getTownBoards(String townName, Pageable pageable){
+        Page<Board> townBoardPages = boardRepository.findAllByTown(townName, pageable);
+
+        return DtoOfGetTownBoards.builder()
+                .dtoOfBoardList(townBoardPages.stream()
+                        .map(v -> DtoOfBoard.builder()
+                                .title(v.getTitle())
+                                .content(v.getContent())
+                                .nickName(v.getHost().getNickname())
+                                .build())
+                        .collect(Collectors.toList()))
+                .size(townBoardPages.getSize())
+                .totalPages(townBoardPages.getTotalPages())
+                .page(townBoardPages.getSize() / pageable.getOffset())
+                .build();
+
+    }
 
 }

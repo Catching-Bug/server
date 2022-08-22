@@ -3,10 +3,8 @@ package com.catchbug.server.board;
 import com.catchbug.server.board.dto.*;
 import com.catchbug.server.common.response.Response;
 import com.catchbug.server.jwt.model.AuthUser;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -119,18 +117,18 @@ public class BoardController {
         return new ResponseEntity(response, HttpStatus.OK);
     }
 
-//    @GetMapping("/api/test")
-//    public ResponseEntity<?> getBoardsList(@RequestParam String townName, Pageable pageable){
-//        DtoOfPage dtoOfGetBoardLists =
-//                boardService.getTownBoards(townName, pageable);
-//
-//        Response response = Response.builder()
-//                .content(dtoOfGetBoardLists)
-//                .message(townName + "의 게시글을 성공적으로 조회하였습니다.")
-//                .build();
-//
-//        return new ResponseEntity(response, HttpStatus.OK);
-//    }
+    @GetMapping("/api/test")
+    public ResponseEntity<?> getBoardsList(@RequestParam String townName, Pageable pageable){
+        DtoOfGetTownBoards dtoOfGetBoardLists =
+                boardService.getTownBoards(townName, pageable);
+
+        Response response = Response.builder()
+                .content(dtoOfGetBoardLists)
+                .message(townName + "의 게시글을 성공적으로 조회하였습니다.")
+                .build();
+
+        return new ResponseEntity(response, HttpStatus.OK);
+    }
 
     /**
      * check validation

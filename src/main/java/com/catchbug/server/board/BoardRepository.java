@@ -42,6 +42,16 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
     List<DtoOfGetRegionCount> getRegionCount();
 
     /**
+     * town 내에 존재하는 게시글을 페이징 단위로 조회하는 메서드
+     * @param town : 조회하려는 town
+     * @param pageable : 페이징
+     * @return : 조회된 게시 글
+     */
+    @EntityGraph(attributePaths = {"host"}, type = EntityGraph.EntityGraphType.FETCH)
+    @Query("select b from Board b left join b.host where b.town = :town")
+    Page<Board> findAllByTown(@Param("town") String town, Pageable pageable);
+
+    /**
      * city 단위로 게시글의 수량을 조회하기 위한 메서드
      * @param regionName : city 들을 조회할 특정 region
      * @return 조회된 City 단위 Dto
@@ -70,9 +80,5 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
             "where b.city = :cityName " +
             "group by b.town")
     List<DtoOfGetTownCount> getTownCount(@Param("cityName") String cityName);
-
-
-//    @Query("select distinct b from Board b left join b.host where b.town = :town")
-//    Page<Board> findAll(@Param("town") String town, Pageable pageable);
 
 }

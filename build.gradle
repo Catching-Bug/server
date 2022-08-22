@@ -49,14 +49,14 @@ jacocoTestCoverageVerification {
 			limit {
 				counter = 'BRANCH'
 				value = 'COVEREDRATIO'
-				minimum = 0
+				minimum = 0.8
 			}
 
 			// 문장 커버리지 80%
 			limit {
 				counter = 'LINE'
 				value = 'COVEREDRATIO'
-				minimum = 0
+				minimum = 0.8
 			}
 
 			// 스프링 부트 메인 메소드 제외

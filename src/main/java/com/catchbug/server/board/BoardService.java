@@ -169,6 +169,7 @@ public class BoardService {
         return DtoOfGetTownBoards.builder()
                 .dtoOfBoardList(townBoardPages.stream()
                         .map(v -> DtoOfBoard.builder()
+                                .id(v.getId())
                                 .title(v.getTitle())
                                 .content(v.getContent())
                                 .nickName(v.getHost().getNickname())
@@ -176,9 +177,8 @@ public class BoardService {
                         .collect(Collectors.toList()))
                 .size(townBoardPages.getSize())
                 .totalPages(townBoardPages.getTotalPages())
-                .page(townBoardPages.getSize() / pageable.getOffset())
+                .page(townBoardPages.getPageable().getPageNumber())
                 .build();
-
     }
 
 }

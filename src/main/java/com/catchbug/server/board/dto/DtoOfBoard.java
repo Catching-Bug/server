@@ -6,7 +6,7 @@ import lombok.Getter;
 @Getter
 @Builder
 public class DtoOfBoard {
-
+    private Long id;
     private String title;
     private String content;
     private String nickName;

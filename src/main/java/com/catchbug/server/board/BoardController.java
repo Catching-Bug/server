@@ -119,11 +119,11 @@ public class BoardController {
 
     @GetMapping("/api/test")
     public ResponseEntity<?> getBoardsList(@RequestParam String townName, Pageable pageable){
-        DtoOfGetTownBoards dtoOfGetBoardLists =
+        DtoOfGetTownBoards boards =
                 boardService.getTownBoards(townName, pageable);
 
         Response response = Response.builder()
-                .content(dtoOfGetBoardLists)
+                .content(boards)
                 .message(townName + "의 게시글을 성공적으로 조회하였습니다.")
                 .build();
 
@@ -138,6 +138,19 @@ public class BoardController {
     public ResponseEntity<?> getResponseEntityFromBindingException(BindingResult bindingResult){
         return new ResponseEntity(Response.builder().content(null).message("잘못된 요청 형식입니다.").build(), HttpStatus.BAD_REQUEST);
 
+    }
+
+    /**
+     * 게시 글에 배치 요청을 보내는 글
+     * @param authUser : jwt로부터 얻은 유저 정보
+     * @param roomId : 배치하려는 글 id(pk)
+     * @return 서버 응답 메세지
+     */
+    @PostMapping("/api/volunteer/{roomId}")
+    public ResponseEntity<?> volunteer(@AuthenticationPrincipal AuthUser authUser, @PathVariable Long roomId){
+        DtoOfVolunteerBoard dtoOfVolunteerBoard = boardService.volunteer(Long.parseLong(authUser.getId()), roomId);
+
+        return new ResponseEntity(Response.builder().content(dtoOfVolunteerBoard).message("성공적으로 배치되었습니다.").build(), HttpStatus.OK);
     }
 
 

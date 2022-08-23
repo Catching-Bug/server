@@ -1,6 +1,8 @@
 package com.catchbug.server.member;
 
 import com.catchbug.server.board.Board;
+import com.catchbug.server.board.exception.AlreadyHiredException;
+import com.catchbug.server.board.exception.NotVolunteerException;
 import com.catchbug.server.location.Location;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -96,6 +98,43 @@ public class Member {
         LocalDateTime maxDate = this.hostingBoards.stream().map(u -> u.getCreatedTime()).max(LocalDateTime::compareTo).get();
 
         return maxDate;
+    }
+
+    /**
+     * 배치 요청을 메서드
+     * @param board : 배치되려는 게시 글
+     */
+    public void volunteer(Board board){
+        checkAlreadyHired(board);
+
+        if(this.hiredBoard == null){
+            this.hiredBoard = board;
+            return;
+        }
+
+        checkValidBoard();
+
+        this.hiredBoard = board;
+
+    }
+
+    /**
+     * 배치하려는 게시 글이 이미 다른 사람에게 배치되었는지 확인하는 메서드
+     * @param board : 배치 하려는 게시 글
+     */
+    public void checkAlreadyHired(Board board){
+        if(board.checkAlreadyHired()){
+            throw new AlreadyHiredException("해당 글은 이미 배치되었습니다.");
+        }
+    }
+
+    /**
+     * 지난 배치 게시 글이 10분이 지났는지 확인하는 메서드
+     */
+    public void checkValidBoard(){
+        if(!this.hiredBoard.checkValidBoard()){
+            throw new NotVolunteerException("이미 배치된 글이 존재합니다.");
+        }
     }
 
 

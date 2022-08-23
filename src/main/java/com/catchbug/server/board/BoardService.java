@@ -99,12 +99,12 @@ public class BoardService {
 
     /**
      * 글을 조회하는 메소드
-     * @param roomId : 조회하려는 글의 id
+     * @param boardId : 조회하려는 글의 id
      * @return 조회 결과 dto
      */
-    public DtoOfGetBoard getBoard(Long roomId){
+    public DtoOfGetBoard getBoard(Long boardId){
 
-        Board boardEntity = boardRepository.findById(roomId)
+        Board boardEntity = boardRepository.findById(boardId)
                 .orElseThrow(() -> new NotFoundBoardException("해당 글을 찾을 수 없습니다."));
 
         return DtoOfGetBoard.builder()
@@ -161,7 +161,7 @@ public class BoardService {
     /**
      * Town 내의 게시글을 리스트로 받기위한 메서드
      * @param townName
-     * @return
+     * @return town 내에 존재하는 세부 글들에 대한 내용 dto(pagination 처리)
      */
     public DtoOfGetTownBoards getTownBoards(String townName, Pageable pageable){
         Page<Board> townBoardPages = boardRepository.findAllByTown(townName, pageable);
@@ -179,6 +179,36 @@ public class BoardService {
                 .totalPages(townBoardPages.getTotalPages())
                 .page(townBoardPages.getPageable().getPageNumber())
                 .build();
+    }
+
+    /**
+     * 배치 요청 메서드
+     * @param memberId : 요청하려는 member Id(pk)
+     * @param boardId : 요청하려는 글 Id(pk)
+     * @return : 요청 완료후 응답 Dto
+     */
+    public DtoOfVolunteerBoard volunteer(Long memberId, Long boardId){
+        Board boardEntity = getBoardEntity(boardId);
+        Member memberEntity = memberService.getMember(memberId);
+
+        memberEntity.volunteer(boardEntity);
+
+        return DtoOfVolunteerBoard.builder()
+                .id(boardEntity.getId())
+                .build();
+
+    }
+
+    /**
+     * Board Entity를 조회하는 메서드
+     * @param boardId : 조회하려는 board Id(PK)
+     * @return 조회된 board Entity
+     */
+    public Board getBoardEntity(Long boardId){
+
+        return boardRepository.findById(boardId)
+                .orElseThrow(() -> new NotFoundBoardException("해당 글을 찾을 수 없습니다."));
+
     }
 
 }

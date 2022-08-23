@@ -11,12 +11,16 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static com.catchbug.server.jwt.util.JwtFactoryTest.setUpMember;
 import static org.mockito.ArgumentMatchers.*;
@@ -184,7 +188,7 @@ public class BoardServiceTest {
 
     @DisplayName("해당 city 의 개수를 정상적으로 출력한다.")
     @Test
-    public void get_cities_count() throws Exception{
+    public void get_cities_boards_count() throws Exception{
 
         //given & mocking
         List<DtoOfGetCityCount> dtoOfGetCityCountList = new ArrayList<>();
@@ -214,6 +218,70 @@ public class BoardServiceTest {
         //then
         Assertions.assertEquals(1L, dtoOfvolunteerBoard.getId());
         
+    }
+    @DisplayName("해당 town 의 개수를 정상적으로 출력한다.")
+    @Test
+    public void get_town_boards_count() throws Exception{
+
+        //given & mocking
+        List<DtoOfGetTownCount> dtoOfGetTownCountList = new ArrayList<>();
+        given(boardRepository.getTownCount(anyString())).willReturn(dtoOfGetTownCountList);
+        //when
+        List<DtoOfGetTownCount> actualResult = boardService.getTownCount("상원동");
+
+        //then
+        Assertions.assertNotNull(actualResult);
+
+    }
+
+
+    @DisplayName("해당 town 의 게시 글을 정상적으로 페이징 처리하여 조회한다.")
+    @Test
+    public void get_town_boards_OnSuccess() throws Exception{
+
+        //given & mocking
+        Member member = setUpMember();
+        Board board = Board.builder()
+                .id(1L)
+                .host(member)
+                .latitude(123123.123123)
+                .longitude(321321.321321)
+                .town("상원동")
+                .city("강남구")
+                .content("아무나")
+                .title("아무나")
+                .region("서울시")
+                .detailLocation("상원빌라 1층")
+                .build();
+        List<Board> mockBoardList = new ArrayList<>();
+        mockBoardList.add(board);
+        Page<Board> townBoardPage = new PageImpl<Board>(mockBoardList, PageRequest.of(10, 10), 10);
+        DtoOfGetTownBoards.builder()
+                .page(townBoardPage.getPageable().getPageSize())
+                .totalPages(townBoardPage.getTotalPages())
+                .size(townBoardPage.getSize())
+                .dtoOfBoardList(townBoardPage.getContent()
+                        .stream()
+                        .map(v -> DtoOfBoard
+                                .builder()
+                                .nickName(v.getHost().getNickname())
+                                .content(v.getContent())
+                                .title(v.getTitle())
+                                .build())
+                        .collect(Collectors.toList()))
+                .build();
+        given(boardRepository.findAllByTown(anyString(), any())).willReturn(townBoardPage);
+        //when
+        DtoOfGetTownBoards actualResult = boardService.getTownBoards("상원동", PageRequest.of(10, 10));
+        DtoOfBoard actualBoards = actualResult.getDtoOfBoardList().get(0);
+        //then
+        Assertions.assertNotNull(actualResult);
+        Assertions.assertEquals(board.getTitle(), actualBoards.getTitle());
+        Assertions.assertEquals(board.getContent(), actualBoards.getContent());
+        Assertions.assertEquals(board.getHost().getNickname(), actualBoards.getNickName());
+        Assertions.assertEquals(board.getId(), actualBoards.getId());
+        Assertions.assertEquals(10, actualResult.getSize());
+        Assertions.assertEquals(10, actualResult.getPage());
     }
     
 

@@ -247,7 +247,9 @@ public class MemberServiceTest {
             memberService.getMemberInformation(1L);
         });
     }
+
     
+
 
 
 

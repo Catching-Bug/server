@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.BatchSize;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 /**
  * <h1>Board</h1>
@@ -74,8 +75,8 @@ public class Board extends BoardBaseEntity {
     /**
      * 해당 방에 배치된 사용자 id(pk)
      */
-//    @OneToOne(mappedBy = "hiredBoard")
-//    private Member employee;
+    @OneToOne(mappedBy = "hiredBoard", fetch = FetchType.LAZY)
+    private Member employee;
 
     /**
      * 도, 시
@@ -107,5 +108,15 @@ public class Board extends BoardBaseEntity {
      */
     private double longitude;
 
+    public boolean checkValidBoard(){
+        return this.getCreatedTime().isBefore(LocalDateTime.now().minusMinutes(10L));
+    }
 
+    public boolean checkAlreadyHired(){
+        if(this.employee != null){
+            return true;
+        }
+
+        return false;
+    }
 }

@@ -38,6 +38,8 @@ public class BoardServiceTest {
     @MockBean
     private Member memberEntity;
 
+    @MockBean
+    private Board mockBoardEntity;
 
     @DisplayName("방이 정상적으로 생성되어야 한다.")
     @Test
@@ -195,10 +197,25 @@ public class BoardServiceTest {
 
 
     }
+    
+    @DisplayName("배치 요청이 왔을 경우 정상적인 배치가 되어야 한다.")
+    @Test
+    public void check_volunteer_board() throws Exception{
+    
+        //given
+        Member member = setUpMember();
+        //when
+        given(boardRepository.findById(anyLong())).willReturn(Optional.of(mockBoardEntity));
+        given(mockBoardEntity.getId()).willReturn(1L);
+        given(memberService.getMember(anyLong())).willReturn(member);
 
+        DtoOfVolunteerBoard dtoOfvolunteerBoard = boardService.volunteer(1L, 1L);
 
-
-
+        //then
+        Assertions.assertEquals(1L, dtoOfvolunteerBoard.getId());
+        
+    }
+    
 
     public static Board setUpBoard(){
         return Board.builder()

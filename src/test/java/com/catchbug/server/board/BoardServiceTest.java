@@ -1,8 +1,11 @@
 package com.catchbug.server.board;
 
 import com.catchbug.server.board.dto.*;
+import com.catchbug.server.board.exception.AlreadyHiredException;
+import com.catchbug.server.board.exception.ExpiredBoardException;
 import com.catchbug.server.board.exception.NotCreateException;
 import com.catchbug.server.board.exception.NotFoundBoardException;
+import com.catchbug.server.employ.Employ;
 import com.catchbug.server.member.Member;
 import com.catchbug.server.member.MemberService;
 import org.junit.jupiter.api.Assertions;
@@ -44,6 +47,9 @@ public class BoardServiceTest {
 
     @MockBean
     private Board mockBoardEntity;
+
+    @MockBean
+    private Employ mockEmployEntity;
 
     @DisplayName("방이 정상적으로 생성되어야 한다.")
     @Test
@@ -201,24 +207,7 @@ public class BoardServiceTest {
 
 
     }
-    
-    @DisplayName("배치 요청이 왔을 경우 정상적인 배치가 되어야 한다.")
-    @Test
-    public void check_volunteer_board() throws Exception{
-    
-        //given
-        Member member = setUpMember();
-        //when
-        given(boardRepository.findById(anyLong())).willReturn(Optional.of(mockBoardEntity));
-        given(mockBoardEntity.getId()).willReturn(1L);
-        given(memberService.getMember(anyLong())).willReturn(member);
 
-        DtoOfVolunteerBoard dtoOfvolunteerBoard = boardService.volunteer(1L, 1L);
-
-        //then
-        Assertions.assertEquals(1L, dtoOfvolunteerBoard.getId());
-        
-    }
     @DisplayName("해당 town 의 개수를 정상적으로 출력한다.")
     @Test
     public void get_town_boards_count() throws Exception{
@@ -283,8 +272,48 @@ public class BoardServiceTest {
         Assertions.assertEquals(10, actualResult.getSize());
         Assertions.assertEquals(10, actualResult.getPage());
     }
-    
 
+    @DisplayName("글에 배치되지않았을 경우 정상적으로 통과한다.")
+    @Test
+    public void checkAlreadyHired_OnEmployNull() throws Exception{
+
+        //given
+        Board board = setUpBoard();
+
+        //when
+        //then
+        Assertions.assertDoesNotThrow(() -> {
+            board.checkAlreadyHired();
+        });
+
+    }
+
+    @DisplayName("글에 배치되어있을 경우 AlreadyHiredException 발생한다.")
+    @Test
+    public void check_AlreadyHiredException() throws Exception{
+
+        //given
+        Board board = Board.builder()
+                .region("region")
+                .town("town")
+                .city("city")
+                .detailLocation("detailLocation")
+                .longitude(123.123123)
+                .latitude(321.321321)
+                .host(setUpMember())
+                .content("content")
+                .title("title")
+                .id(1L)
+                .employ(mockEmployEntity)
+                .build();;
+
+        //when
+        //then
+        Assertions.assertThrows(AlreadyHiredException.class, () -> {
+            board.checkAlreadyHired();
+        });
+
+    }
     public static Board setUpBoard(){
         return Board.builder()
                 .region("region")

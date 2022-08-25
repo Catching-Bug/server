@@ -1,11 +1,23 @@
 package com.catchbug.server.board;
 
 import com.catchbug.server.board.dto.DtoOfUpdateBoard;
+import com.catchbug.server.employ.Employ;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 
+import static com.catchbug.server.jwt.util.JwtFactoryTest.setUpMember;
+
+
+@MockBean(JpaMetamodelMappingContext.class)
 public class BoardEntityTest {
+
+    @MockBean
+    private Employ mockEmployEntity;
+
 
     @DisplayName("Board의 값이 정상적으로 업데이트 되어야 한다.")
     @Test

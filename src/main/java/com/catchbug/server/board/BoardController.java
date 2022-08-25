@@ -140,18 +140,6 @@ public class BoardController {
 
     }
 
-    /**
-     * 게시 글에 배치 요청을 보내는 글
-     * @param authUser : jwt로부터 얻은 유저 정보
-     * @param roomId : 배치하려는 글 id(pk)
-     * @return 서버 응답 메세지
-     */
-    @PostMapping("/api/volunteer/{roomId}")
-    public ResponseEntity<?> volunteer(@AuthenticationPrincipal AuthUser authUser, @PathVariable Long roomId){
-        DtoOfVolunteerBoard dtoOfVolunteerBoard = boardService.volunteer(Long.parseLong(authUser.getId()), roomId);
-
-        return new ResponseEntity(Response.builder().content(dtoOfVolunteerBoard).message("성공적으로 배치되었습니다.").build(), HttpStatus.OK);
-    }
 
 
 }

@@ -182,24 +182,6 @@ public class BoardService {
     }
 
     /**
-     * 배치 요청 메서드
-     * @param memberId : 요청하려는 member Id(pk)
-     * @param boardId : 요청하려는 글 Id(pk)
-     * @return : 요청 완료후 응답 Dto
-     */
-    public DtoOfVolunteerBoard volunteer(Long memberId, Long boardId){
-        Board boardEntity = getBoardEntity(boardId);
-        Member memberEntity = memberService.getMember(memberId);
-
-        memberEntity.volunteer(boardEntity);
-
-        return DtoOfVolunteerBoard.builder()
-                .id(boardEntity.getId())
-                .build();
-
-    }
-
-    /**
      * Board Entity를 조회하는 메서드
      * @param boardId : 조회하려는 board Id(PK)
      * @return 조회된 board Entity

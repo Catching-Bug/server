@@ -2,17 +2,15 @@ package com.catchbug.server.member;
 
 import com.catchbug.server.board.Board;
 import com.catchbug.server.board.exception.AlreadyHiredException;
-import com.catchbug.server.board.exception.NotVolunteerException;
+import com.catchbug.server.employ.Employ;
 import com.catchbug.server.location.Location;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -67,18 +65,19 @@ public class Member {
     private List<Board> hostingBoards;
 
     /**
-     * 사용자가 배치받은 글
-     */
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "BOARD_ID")
-    private Board hiredBoard;
-
-    /**
      * 사용자가 등록한 위치
      */
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
     private List<Location> locations;
 
+    /**
+     * 사용자 배치 정보
+     */
+    @OneToOne(mappedBy = "employer", fetch = FetchType.LAZY)
+    private Employ employer;
+
+    @OneToOne(mappedBy = "employee", fetch = FetchType.LAZY)
+    private Employ employee;
 
 
     /**
@@ -100,42 +99,21 @@ public class Member {
         return maxDate;
     }
 
-    /**
-     * 배치 요청을 메서드
-     * @param board : 배치되려는 게시 글
-     */
-    public void volunteer(Board board){
-        checkAlreadyHired(board);
-
-        if(this.hiredBoard == null){
-            this.hiredBoard = board;
+    public void checkAbleToEmploy(){
+        if(this.employer == null && this.employee == null){
             return;
         }
 
-        checkValidBoard();
-
-        this.hiredBoard = board;
-
+        checkValidEmployment();
     }
-
-    /**
-     * 배치하려는 게시 글이 이미 다른 사람에게 배치되었는지 확인하는 메서드
-     * @param board : 배치 하려는 게시 글
-     */
-    public void checkAlreadyHired(Board board){
-        if(board.checkAlreadyHired()){
-            throw new AlreadyHiredException("해당 글은 이미 배치되었습니다.");
+    public void checkValidEmployment(){
+        //fixme 하드코딩 yml 로 빼야함
+        if(this.employer.getExpiryTime().isBefore(LocalDateTime.now().minusMinutes(10))
+                && this.employee.getExpiryTime().isBefore(LocalDateTime.now().minusMinutes(10))){
+            return;
         }
-    }
 
-    /**
-     * 지난 배치 게시 글이 10분이 지났는지 확인하는 메서드
-     */
-    public void checkValidBoard(){
-        if(!this.hiredBoard.checkValidBoard()){
-            throw new NotVolunteerException("이미 배치된 글이 존재합니다.");
-        }
+        throw new AlreadyHiredException("이미 배치된 글이 존재하여 매칭할 수 없습니다.");
     }
-
 
 }

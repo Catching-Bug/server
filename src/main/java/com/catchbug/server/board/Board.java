@@ -2,6 +2,9 @@ package com.catchbug.server.board;
 
 import com.catchbug.server.board.auditing.BoardBaseEntity;
 import com.catchbug.server.board.dto.DtoOfUpdateBoard;
+import com.catchbug.server.board.exception.AlreadyHiredException;
+import com.catchbug.server.board.exception.ExpiredBoardException;
+import com.catchbug.server.employ.Employ;
 import com.catchbug.server.member.Member;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
@@ -73,10 +76,10 @@ public class Board extends BoardBaseEntity {
     private Member host;
 
     /**
-     * 해당 방에 배치된 사용자 id(pk)
+     * 해당 방의 고용정보
      */
-    @OneToOne(mappedBy = "hiredBoard", fetch = FetchType.LAZY)
-    private Member employee;
+    @OneToOne(mappedBy = "board", fetch = FetchType.LAZY)
+    private Employ employ;
 
     /**
      * 도, 시
@@ -108,15 +111,24 @@ public class Board extends BoardBaseEntity {
      */
     private double longitude;
 
-    public boolean checkValidBoard(){
-        return this.getCreatedTime().isBefore(LocalDateTime.now().minusMinutes(10L));
-    }
-
-    public boolean checkAlreadyHired(){
-        if(this.employee != null){
-            return true;
+    public void checkValidBoard(){
+        //fixme 하드코딩 수정해야함
+        if(this.getCreatedTime().isBefore(LocalDateTime.now().minusMinutes(10L))){
+            throw new ExpiredBoardException("해당 글은 비활성화된 방입니다.");
         }
 
-        return false;
     }
+
+    public void checkAlreadyHired(){
+        if(this.employ == null){
+            return;
+        }
+            throw new AlreadyHiredException("해당 글은 이미 배치되었습니다.");
+    }
+
+    public void checkAbleToApply(){
+        checkAlreadyHired();
+        checkValidBoard();
+    }
+
 }

@@ -19,6 +19,12 @@ public class EmployService {
     private final MemberService memberService;
     private final BoardService boardService;
 
+    /**
+     * 고용정보 생성 메서드
+     * @param employeeId : 요청자 id(pk)
+     * @param boardId 배치하려는 게시 글 id(pk)
+     * @return 고용된 글의 정보 dto
+     */
     public DtoOfApplyEmploy apply(Long employeeId, Long boardId){
         Member employeeEntity = memberService.getMember(employeeId);
         Board boardEntity = boardService.getBoardEntity(boardId);
@@ -45,6 +51,12 @@ public class EmployService {
 
     }
 
+    /**
+     * 고용자가 고용을 취소하는 메서드
+     * @param memberId : 요청자 id(pk)
+     * @param boardId : 요청 대상 게시 글 id(pk)
+     * @return : 요청 취소에 대한 응답 dto
+     */
     public DtoOfCancelByEmployer cancelEmployByEmployer(Long memberId, Long boardId){
         Member memberEntity = memberService.getMember(memberId);
         Board boardEntity = boardService.getBoardEntity(boardId);
@@ -59,6 +71,12 @@ public class EmployService {
                 .build();
     }
 
+    /**
+     * 고용 정보가 존재하는지 확인하는 메서드
+     * @param memberEntity : 요청자 entity
+     * @param boardEntity : 게시글 id
+     * @return : 존재하는 고용 정보 엔티티
+     */
     public Employ checkCancelAuthorityByEmployer(Member memberEntity, Board boardEntity){
         Employ employEntity = employRepository.findByEmployerAndBoard(memberEntity, boardEntity)
                 .orElseThrow(() -> new NoPermissionException("해당 글에 대한 권한이 없습니다."));

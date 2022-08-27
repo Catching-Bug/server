@@ -4,7 +4,6 @@ import com.catchbug.server.board.Board;
 import com.catchbug.server.board.BoardService;
 import com.catchbug.server.employ.dto.DtoOfApplyEmploy;
 import com.catchbug.server.employ.dto.DtoOfCancelByEmployer;
-import com.catchbug.server.employ.dto.DtoOfTest;
 import com.catchbug.server.employ.exception.NoPermissionException;
 import com.catchbug.server.member.Member;
 import com.catchbug.server.member.MemberService;

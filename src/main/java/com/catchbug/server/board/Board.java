@@ -78,7 +78,7 @@ public class Board extends BoardBaseEntity {
     /**
      * 해당 방의 고용정보
      */
-    @OneToOne(mappedBy = "board", fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "board", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Employ employ;
 
     /**

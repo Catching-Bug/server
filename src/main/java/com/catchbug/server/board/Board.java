@@ -36,6 +36,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class Board extends BoardBaseEntity {
 
+    private int count = 0;
     /**
      * 게시판 글 ID(primary key)
      */
@@ -122,9 +123,8 @@ public class Board extends BoardBaseEntity {
      */
     private double longitude;
 
-    /**
-     * 방 고용 상황
-     */
+    @Version
+    private Long version;
 
     public void checkValidBoard(){
         //fixme 하드코딩 수정해야함
@@ -148,6 +148,10 @@ public class Board extends BoardBaseEntity {
 
     public void updateStatus(Status status){
         this.status = status;
+    }
+
+    public void plusCount(){
+        this.count = count + 1;
     }
 
 }

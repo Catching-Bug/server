@@ -155,7 +155,4 @@ public class BoardController {
 
         return new ResponseEntity(response, HttpStatus.OK);
     }
-
-
-
 }

@@ -19,11 +19,14 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
 import static com.catchbug.server.employ.EmployEntityTest.setUpEmploy;
@@ -372,7 +375,7 @@ public class BoardServiceTest {
         Member member = setUpMember();
         Board board = setUpBoard();
 
-        given(boardRepository.findById(anyLong())).willReturn(Optional.of(board));
+        given(boardRepository.findWithIdForUpdate(anyLong())).willReturn(Optional.of(board));
         DtoOfGetBoard expectedResult = DtoOfGetBoard
                 .builder()
                 .expiryTime(LocalDateTime.now().plusMinutes(10))
@@ -438,6 +441,8 @@ public class BoardServiceTest {
                 .employ(employ)
                 .build();
     }
+
+
 
 
 }

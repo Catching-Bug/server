@@ -42,7 +42,11 @@ public class EmployController {
     @PostMapping("/api/employ/{boardId}")
     public ResponseEntity apply(@AuthenticationPrincipal AuthUser authUser, @PathVariable Long boardId){
 
-        DtoOfApplyEmploy dtoOfApplyEmploy = employService.apply(Long.parseLong(authUser.getId()), boardId);
+        DtoOfApplyEmploy dtoOfApplyEmploy =
+                employService.apply(
+                        Long.parseLong(
+                                authUser.getId()),
+                        boardId);
 
         return new ResponseEntity(dtoOfApplyEmploy, HttpStatus.OK);
     }

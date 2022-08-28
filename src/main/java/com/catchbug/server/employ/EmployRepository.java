@@ -3,7 +3,11 @@ package com.catchbug.server.employ;
 import com.catchbug.server.board.Board;
 import com.catchbug.server.member.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Lock;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
+import javax.persistence.LockModeType;
 import java.util.Optional;
 
 /**
@@ -28,4 +32,6 @@ public interface EmployRepository extends JpaRepository<Employ, Long> {
      * @return 조회된 고용정보
      */
     Optional<Employ> findByEmployerAndBoard(Member employer, Board board);
+
+
 }

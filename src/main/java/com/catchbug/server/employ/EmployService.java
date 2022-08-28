@@ -5,13 +5,18 @@ import com.catchbug.server.board.BoardService;
 import com.catchbug.server.board.Status;
 import com.catchbug.server.employ.dto.DtoOfApplyEmploy;
 import com.catchbug.server.employ.dto.DtoOfCancelByEmployer;
-import com.catchbug.server.employ.dto.DtoOfGetEmploy;
 import com.catchbug.server.employ.exception.NoPermissionException;
-import com.catchbug.server.employ.exception.NotFoundEmployException;
+import com.catchbug.server.employ.exception.TransactionException;
 import com.catchbug.server.member.Member;
 import com.catchbug.server.member.MemberService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.sql.SQLException;
+import java.sql.SQLTransactionRollbackException;
 
 @Service
 @RequiredArgsConstructor
@@ -27,6 +32,7 @@ public class EmployService {
      * @param boardId 배치하려는 게시 글 id(pk)
      * @return 고용된 글의 정보 dto
      */
+    @Transactional(isolation = Isolation.SERIALIZABLE)
     public DtoOfApplyEmploy apply(Long employeeId, Long boardId){
         Member employeeEntity = memberService.getMember(employeeId);
         Board boardEntity = boardService.getBoardEntity(boardId);
@@ -42,8 +48,11 @@ public class EmployService {
                 .board(boardEntity)
                 .expiryTime(boardEntity.getCreatedTime().plusMinutes(10))
                 .build();
-
-        employRepository.save(createdEmployEntity);
+        try {
+            employRepository.save(createdEmployEntity);
+        }catch (Exception e){
+            throw new TransactionException("이미 배치되었습니다.");
+        }
         boardEntity.updateStatus(Status.MATCHED);
 
         return DtoOfApplyEmploy.builder()

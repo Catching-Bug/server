@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 
 import java.time.LocalDateTime;
@@ -110,7 +111,7 @@ public class BoardService {
 
         Board boardEntity = boardRepository.findById(boardId)
                 .orElseThrow(() -> new NotFoundBoardException("해당 글을 찾을 수 없습니다."));
-
+        boardEntity.plusCount();
         DtoOfGetBoard dtoOfGetBoard = DtoOfGetBoard.builder()
                 .id(boardEntity.getId())
                 .expiryTime(boardEntity.getExpiryTime())
@@ -202,6 +203,12 @@ public class BoardService {
         return boardRepository.findById(boardId)
                 .orElseThrow(() -> new NotFoundBoardException("해당 글을 찾을 수 없습니다."));
 
+    }
+
+    @Transactional
+    public Board getBoardForUpdate(Long boardId){
+        return boardRepository.findWithIdForUpdate(boardId)
+                .orElseThrow(() -> new NotFoundBoardException("해당 글을 찾을 수 없습니다."));
     }
 
 }

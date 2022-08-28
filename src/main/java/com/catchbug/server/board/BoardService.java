@@ -3,6 +3,8 @@ package com.catchbug.server.board;
 import com.catchbug.server.board.dto.*;
 import com.catchbug.server.board.exception.NotCreateException;
 import com.catchbug.server.board.exception.NotFoundBoardException;
+import com.catchbug.server.employ.EmployService;
+import com.catchbug.server.employ.dto.DtoOfGetEmploy;
 import com.catchbug.server.member.Member;
 import com.catchbug.server.member.MemberService;
 import lombok.RequiredArgsConstructor;
@@ -66,6 +68,8 @@ public class BoardService {
                 .city(dtoOfCreateBoard.getCity())
                 .town(dtoOfCreateBoard.getTown())
                 .detailLocation(dtoOfCreateBoard.getDetailLocation())
+                .status(Status.WAITING)
+                .expiryTime(LocalDateTime.now().plusMinutes(10))
                 .build();
 
         Board boardEntity = boardRepository.save(board);
@@ -107,13 +111,14 @@ public class BoardService {
         Board boardEntity = boardRepository.findById(boardId)
                 .orElseThrow(() -> new NotFoundBoardException("해당 글을 찾을 수 없습니다."));
 
-        return DtoOfGetBoard.builder()
+        DtoOfGetBoard dtoOfGetBoard = DtoOfGetBoard.builder()
                 .id(boardEntity.getId())
+                .expiryTime(boardEntity.getExpiryTime())
                 .region(boardEntity.getRegion())
                 .city(boardEntity.getCity())
                 .town(boardEntity.getTown())
                 .detailLocation(boardEntity.getDetailLocation())
-                .createdAt(boardEntity.getCreatedTime())
+                .createdTime(boardEntity.getCreatedTime())
                 .roomTitle(boardEntity.getTitle())
                 .roomContent(boardEntity.getContent())
                 .creatorNickname(boardEntity.getHost().getNickname())
@@ -121,6 +126,12 @@ public class BoardService {
                 .longitude(boardEntity.getLongitude())
                 .creatorId(boardEntity.getHost().getId())
                 .build();
+
+        if(boardEntity.getStatus().equals(Status.MATCHED)){
+            dtoOfGetBoard.updateEmploy(boardEntity.getEmploy());
+        }
+
+        return dtoOfGetBoard;
     }
 
 
@@ -182,7 +193,7 @@ public class BoardService {
     }
 
     /**
-     * Board Entity를 조회하는 메서드
+     * Board Entity 를 조회하는 메서드
      * @param boardId : 조회하려는 board Id(PK)
      * @return 조회된 board Entity
      */

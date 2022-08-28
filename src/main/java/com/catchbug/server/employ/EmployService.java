@@ -2,9 +2,12 @@ package com.catchbug.server.employ;
 
 import com.catchbug.server.board.Board;
 import com.catchbug.server.board.BoardService;
+import com.catchbug.server.board.Status;
 import com.catchbug.server.employ.dto.DtoOfApplyEmploy;
 import com.catchbug.server.employ.dto.DtoOfCancelByEmployer;
+import com.catchbug.server.employ.dto.DtoOfGetEmploy;
 import com.catchbug.server.employ.exception.NoPermissionException;
+import com.catchbug.server.employ.exception.NotFoundEmployException;
 import com.catchbug.server.member.Member;
 import com.catchbug.server.member.MemberService;
 import lombok.RequiredArgsConstructor;
@@ -41,6 +44,7 @@ public class EmployService {
                 .build();
 
         employRepository.save(createdEmployEntity);
+        boardEntity.updateStatus(Status.MATCHED);
 
         return DtoOfApplyEmploy.builder()
                 .employeeNickname(employeeEntity.getNickname())
@@ -61,7 +65,7 @@ public class EmployService {
         Board boardEntity = boardService.getBoardEntity(boardId);
         Employ employEntity = checkCancelAuthorityByEmployer(memberEntity, boardEntity);
         employRepository.delete(employEntity);
-
+        boardEntity.updateStatus(Status.WAITING);
         return DtoOfCancelByEmployer.builder()
                 .boardTitle(boardEntity.getTitle())
                 .boardId(boardEntity.getId())
@@ -82,6 +86,5 @@ public class EmployService {
 
         return employEntity;
     }
-
 
 }

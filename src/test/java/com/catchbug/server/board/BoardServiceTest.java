@@ -375,7 +375,7 @@ public class BoardServiceTest {
         Member member = setUpMember();
         Board board = setUpBoard();
 
-        given(boardRepository.findWithIdForUpdate(anyLong())).willReturn(Optional.of(board));
+        given(boardRepository.findById(anyLong())).willReturn(Optional.of(board));
         DtoOfGetBoard expectedResult = DtoOfGetBoard
                 .builder()
                 .expiryTime(LocalDateTime.now().plusMinutes(10))

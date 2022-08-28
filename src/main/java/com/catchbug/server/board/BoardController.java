@@ -140,6 +140,22 @@ public class BoardController {
 
     }
 
+    /**
+     * 게시 글 1개를 조회하는 메서드
+     * @param boardId : 조회하려는 게시글 id
+     * @return : 조회된 게시글 정보 dto
+     */
+    @GetMapping("/api/board/{boardId}")
+    public ResponseEntity getBoard(@PathVariable Long boardId){
+        DtoOfGetBoard dtoOfGetBoard = boardService.getBoard(boardId);
+        Response response = Response.builder()
+                .content(dtoOfGetBoard)
+                .message("게시글을 정상적으로 조회하였습니다.")
+                .build();
+
+        return new ResponseEntity(response, HttpStatus.OK);
+    }
+
 
 
 }

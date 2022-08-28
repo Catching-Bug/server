@@ -6,6 +6,7 @@ import com.catchbug.server.board.exception.ExpiredBoardException;
 import com.catchbug.server.board.exception.NotCreateException;
 import com.catchbug.server.board.exception.NotFoundBoardException;
 import com.catchbug.server.employ.Employ;
+import com.catchbug.server.employ.EmployService;
 import com.catchbug.server.member.Member;
 import com.catchbug.server.member.MemberService;
 import org.junit.jupiter.api.Assertions;
@@ -25,6 +26,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static com.catchbug.server.employ.EmployEntityTest.setUpEmploy;
 import static com.catchbug.server.jwt.util.JwtFactoryTest.setUpMember;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
@@ -41,6 +43,9 @@ public class BoardServiceTest {
 
     @MockBean
     private MemberService memberService;
+
+    @MockBean
+    private EmployService employService;
 
     @MockBean
     private Member memberEntity;
@@ -314,6 +319,93 @@ public class BoardServiceTest {
         });
 
     }
+
+    @DisplayName("매칭된 글을 정상적으로 조회한다.")
+    @Test
+    public void getBoardTest_OnMatchedBoard() throws Exception{
+
+        //given & mocking
+        Member member = setUpMember();
+        Board board = setUpMatchedBoard(mockEmployEntity);
+
+        given(boardRepository.findById(anyLong())).willReturn(Optional.of(board));
+        given(mockEmployEntity.getId()).willReturn(1L);
+        given(mockEmployEntity.getEmployee()).willReturn(member);
+        given(mockEmployEntity.getEmployer()).willReturn(member);
+        DtoOfGetBoard expectedResult = DtoOfGetBoard
+                .builder()
+                .expiryTime(LocalDateTime.now().plusMinutes(10))
+                .creatorId(member.getId())
+                .id(1L)
+                .creatorNickname(member.getNickname())
+                .latitude(board.getLatitude())
+                .longitude(board.getLongitude())
+                .roomTitle(board.getTitle())
+                .roomContent(board.getContent())
+                .town(board.getTown())
+                .city(board.getCity())
+                .region(board.getRegion())
+                .detailLocation(board.getDetailLocation())
+                .build();
+        //when
+
+        DtoOfGetBoard actualResult = boardService.getBoard(1L);
+        //then
+        Assertions.assertEquals(expectedResult.getCreatorId(), actualResult.getCreatorId());
+        Assertions.assertEquals(expectedResult.getRoomContent(), actualResult.getRoomContent());
+        Assertions.assertEquals(expectedResult.getRoomTitle(), actualResult.getRoomTitle());
+        Assertions.assertEquals(expectedResult.getLongitude(), actualResult.getLongitude());
+        Assertions.assertEquals(expectedResult.getLatitude(), actualResult.getLatitude());
+        Assertions.assertEquals(expectedResult.getTown(), actualResult.getTown());
+        Assertions.assertEquals(expectedResult.getRegion(), actualResult.getRegion());
+        Assertions.assertEquals(expectedResult.getCity(), actualResult.getCity());
+        Assertions.assertEquals(expectedResult.getDetailLocation(), actualResult.getDetailLocation());
+        Assertions.assertEquals(expectedResult.getId(), actualResult.getId());
+        Assertions.assertNotNull(actualResult.getEmploy());
+
+    }
+    @DisplayName("매칭되지 않은 글을 정상적으로 조회한다.")
+    @Test
+    public void getBoardTest_OnWaitingBoard() throws Exception{
+
+        //given & mocking
+        Member member = setUpMember();
+        Board board = setUpBoard();
+
+        given(boardRepository.findById(anyLong())).willReturn(Optional.of(board));
+        DtoOfGetBoard expectedResult = DtoOfGetBoard
+                .builder()
+                .expiryTime(LocalDateTime.now().plusMinutes(10))
+                .creatorId(member.getId())
+                .id(1L)
+                .creatorNickname(member.getNickname())
+                .latitude(board.getLatitude())
+                .longitude(board.getLongitude())
+                .roomTitle(board.getTitle())
+                .roomContent(board.getContent())
+                .town(board.getTown())
+                .city(board.getCity())
+                .region(board.getRegion())
+                .detailLocation(board.getDetailLocation())
+                .build();
+        //when
+
+        DtoOfGetBoard actualResult = boardService.getBoard(1L);
+        //then
+        Assertions.assertEquals(expectedResult.getCreatorId(), actualResult.getCreatorId());
+        Assertions.assertEquals(expectedResult.getRoomContent(), actualResult.getRoomContent());
+        Assertions.assertEquals(expectedResult.getRoomTitle(), actualResult.getRoomTitle());
+        Assertions.assertEquals(expectedResult.getLongitude(), actualResult.getLongitude());
+        Assertions.assertEquals(expectedResult.getLatitude(), actualResult.getLatitude());
+        Assertions.assertEquals(expectedResult.getTown(), actualResult.getTown());
+        Assertions.assertEquals(expectedResult.getRegion(), actualResult.getRegion());
+        Assertions.assertEquals(expectedResult.getCity(), actualResult.getCity());
+        Assertions.assertEquals(expectedResult.getDetailLocation(), actualResult.getDetailLocation());
+        Assertions.assertEquals(expectedResult.getId(), actualResult.getId());
+        Assertions.assertNull(actualResult.getEmploy());
+
+    }
+
     public static Board setUpBoard(){
         return Board.builder()
                 .region("region")
@@ -326,7 +418,26 @@ public class BoardServiceTest {
                 .content("content")
                 .title("title")
                 .id(1L)
+                .status(Status.WAITING)
                 .build();
     }
+
+    public static Board setUpMatchedBoard(Employ employ){
+        return Board.builder()
+                .region("region")
+                .town("town")
+                .city("city")
+                .detailLocation("detailLocation")
+                .longitude(123.123123)
+                .latitude(321.321321)
+                .host(setUpMember())
+                .content("content")
+                .title("title")
+                .id(1L)
+                .status(Status.MATCHED)
+                .employ(employ)
+                .build();
+    }
+
 
 }

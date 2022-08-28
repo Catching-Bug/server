@@ -1,5 +1,8 @@
 package com.catchbug.server.board.dto;
 
+import com.catchbug.server.board.Status;
+import com.catchbug.server.employ.Employ;
+import com.catchbug.server.employ.dto.DtoOfGetEmploy;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -72,14 +75,37 @@ public class DtoOfGetBoard {
     /**
      * 방 생성 시간
      */
-    private LocalDateTime createdAt;
+    private LocalDateTime createdTime;
 
     /**
      * 생성자 id
      */
     private Long creatorId;
 
-    //todo 배치 상황 추가해야함
+    /**
+     * 글 매칭 상황
+     */
+    private Status status;
+
+    /**
+     * 글 만료 시간
+     */
+    private LocalDateTime expiryTime;
+
+    /**
+     * 고용정보 Dto
+     */
+    private DtoOfGetEmploy employ;
+
+    public void updateEmploy(Employ employ){
+        this.employ = DtoOfGetEmploy.builder()
+                .employId(employ.getId())
+                .employeeId(employ.getEmployee().getId())
+                .employerId(employ.getEmployer().getId())
+                .employeeNickname(employ.getEmployee().getNickname())
+                .employerNickname(employ.getEmployer().getNickname())
+                .build();
+    }
 
 }
 

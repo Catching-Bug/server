@@ -56,6 +56,12 @@ public class Board extends BoardBaseEntity {
     private String content;
 
     /**
+     * 만료 시간
+     */
+    @Column(name = "EXPIRY_TIME")
+    private LocalDateTime expiryTime;
+
+    /**
      * 게시 글 업데이트(수정)을 위한 메소드
      * @param dtoOfUpdateBoard : 게시 글 업데이트를 위한 DTO
      * @return : 업데이트 된 후의 this 클래스
@@ -80,6 +86,11 @@ public class Board extends BoardBaseEntity {
      */
     @OneToOne(mappedBy = "board", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Employ employ;
+
+    /**
+     * 방 고용 상태
+     */
+    private Status status;
 
     /**
      * 도, 시
@@ -111,6 +122,10 @@ public class Board extends BoardBaseEntity {
      */
     private double longitude;
 
+    /**
+     * 방 고용 상황
+     */
+
     public void checkValidBoard(){
         //fixme 하드코딩 수정해야함
         if(this.getCreatedTime().isBefore(LocalDateTime.now().minusMinutes(10L))){
@@ -129,6 +144,10 @@ public class Board extends BoardBaseEntity {
     public void checkAbleToApply(){
         checkAlreadyHired();
         checkValidBoard();
+    }
+
+    public void updateStatus(Status status){
+        this.status = status;
     }
 
 }

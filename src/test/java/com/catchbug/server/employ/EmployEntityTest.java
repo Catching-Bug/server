@@ -42,5 +42,15 @@ public class EmployEntityTest {
 
     }
 
+    public static Employ setUpEmploy(Member memberEntity, Board boardEntity){
+        return Employ.builder()
+                .employee(memberEntity)
+                .employer(memberEntity)
+                .board(boardEntity)
+                .id(1L)
+                .expiryTime(LocalDateTime.now().plusMinutes(10))
+                .build();
+    }
+
 
 }

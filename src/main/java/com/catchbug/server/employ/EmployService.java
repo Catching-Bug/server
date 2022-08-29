@@ -6,7 +6,6 @@ import com.catchbug.server.board.Status;
 import com.catchbug.server.board.event.MatchedEvent;
 import com.catchbug.server.employ.dto.DtoOfApplyEmploy;
 import com.catchbug.server.employ.dto.DtoOfCancelByEmploy;
-import com.catchbug.server.employ.dto.DtoOfMatchedStatus;
 import com.catchbug.server.employ.exception.NoPermissionException;
 import com.catchbug.server.employ.exception.NotFoundEmployException;
 import com.catchbug.server.employ.exception.TransactionException;
@@ -49,8 +48,9 @@ public class EmployService {
                 .board(boardEntity)
                 .expiryTime(boardEntity.getCreatedTime().plusMinutes(10))
                 .build();
+        Employ savedEmployEntity = null;
         try {
-            employRepository.save(createdEmployEntity);
+            savedEmployEntity = employRepository.save(createdEmployEntity);
         }catch (Exception e){
             throw new TransactionException("이미 배치되었습니다.");
         }
@@ -60,6 +60,7 @@ public class EmployService {
                 .employeeNickname(employeeEntity.getNickname())
                 .employerNickname(employerEntity.getNickname())
                 .boardId(boardEntity.getId())
+                .employId(savedEmployEntity.getId())
                 .build();
 
     }

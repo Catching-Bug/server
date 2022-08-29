@@ -51,20 +51,28 @@ public class EmployServiceTest {
     @Test
     public void apply_employ_OnSuccess() throws Exception{
 
-        Member employerEntity = setUpMember();
+        Member memberEntity = setUpMember();
+        Employ employEntity = Employ.builder()
+                .id(1L)
+                        .employee(memberEntity)
+                                .employer(memberEntity)
+                                        .board(setUpBoard())
+                                                .expiryTime(LocalDateTime.now().plusMinutes(10L))
+                                                        .build();
         //given
         given(memberService.getMember(anyLong())).willReturn(mockMemberEntity);
         given(boardService.getBoardEntity(anyLong())).willReturn(mockBoardEntity);
-        given(mockBoardEntity.getHost()).willReturn(employerEntity);
+        given(mockBoardEntity.getHost()).willReturn(memberEntity);
         given(mockBoardEntity.getId()).willReturn(1L);
         given(mockMemberEntity.getNickname()).willReturn("employee");
         given(mockBoardEntity.getCreatedTime()).willReturn(LocalDateTime.now());
+        given(employRepository.save(any())).willReturn(employEntity);
 
         //when
         DtoOfApplyEmploy actualResult = employService.apply(1L, 1L);
 
         //then
-        Assertions.assertEquals(employerEntity.getNickname(), actualResult.getEmployerNickname());
+        Assertions.assertEquals(memberEntity.getNickname(), actualResult.getEmployerNickname());
         Assertions.assertEquals(mockMemberEntity.getNickname(), actualResult.getEmployeeNickname());
         Assertions.assertEquals(mockBoardEntity.getId(), actualResult.getBoardId());
         

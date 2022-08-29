@@ -3,6 +3,7 @@ package com.catchbug.server.employ;
 import com.catchbug.server.board.Board;
 import com.catchbug.server.board.BoardService;
 import com.catchbug.server.board.Status;
+import com.catchbug.server.board.event.MatchedEvent;
 import com.catchbug.server.employ.dto.DtoOfApplyEmploy;
 import com.catchbug.server.employ.dto.DtoOfCancelByEmployer;
 import com.catchbug.server.employ.exception.NoPermissionException;
@@ -10,13 +11,10 @@ import com.catchbug.server.employ.exception.TransactionException;
 import com.catchbug.server.member.Member;
 import com.catchbug.server.member.MemberService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.parameters.P;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.sql.SQLException;
-import java.sql.SQLTransactionRollbackException;
 
 @Service
 @RequiredArgsConstructor
@@ -25,6 +23,7 @@ public class EmployService {
     private final EmployRepository employRepository;
     private final MemberService memberService;
     private final BoardService boardService;
+    private final ApplicationEventPublisher eventPublisher;
 
     /**
      * 고용정보 생성 메서드
@@ -53,7 +52,8 @@ public class EmployService {
         }catch (Exception e){
             throw new TransactionException("이미 배치되었습니다.");
         }
-        boardEntity.updateStatus(Status.MATCHED);
+        System.out.println("Publish Event");
+        eventPublisher.publishEvent(MatchedEvent.builder().board(boardEntity).status(Status.MATCHED).build());
 
         return DtoOfApplyEmploy.builder()
                 .employeeNickname(employeeEntity.getNickname())
@@ -74,7 +74,7 @@ public class EmployService {
         Board boardEntity = boardService.getBoardEntity(boardId);
         Employ employEntity = checkCancelAuthorityByEmployer(memberEntity, boardEntity);
         employRepository.delete(employEntity);
-        boardEntity.updateStatus(Status.WAITING);
+        eventPublisher.publishEvent(MatchedEvent.builder().board(boardEntity).status(Status.WAITING).build());
         return DtoOfCancelByEmployer.builder()
                 .boardTitle(boardEntity.getTitle())
                 .boardId(boardEntity.getId())

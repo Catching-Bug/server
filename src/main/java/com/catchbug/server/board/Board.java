@@ -91,6 +91,8 @@ public class Board extends BoardBaseEntity {
     /**
      * 방 고용 상태
      */
+    @Column(name = "STATUS")
+    @Enumerated(EnumType.STRING)
     private Status status;
 
     /**

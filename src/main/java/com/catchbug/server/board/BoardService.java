@@ -73,7 +73,7 @@ public class BoardService {
                 .expiryTime(LocalDateTime.now().plusMinutes(10))
                 .build();
 
-        Board boardEntity = boardRepository.save(board);
+        Board boardEntity = saveEntity(board);
 
         DtoOfCreatedBoard dtoOfCreatedBoard = DtoOfCreatedBoard.builder().roomId(boardEntity.getId())
                 .build();
@@ -209,6 +209,10 @@ public class BoardService {
     public Board getBoardForUpdate(Long boardId){
         return boardRepository.findWithIdForUpdate(boardId)
                 .orElseThrow(() -> new NotFoundBoardException("해당 글을 찾을 수 없습니다."));
+    }
+
+    public Board saveEntity(Board board){
+        return boardRepository.save(board);
     }
 
 }

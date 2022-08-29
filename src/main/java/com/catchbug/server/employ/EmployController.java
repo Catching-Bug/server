@@ -48,7 +48,12 @@ public class EmployController {
                                 authUser.getId()),
                         boardId);
 
-        return new ResponseEntity(dtoOfApplyEmploy, HttpStatus.OK);
+        Response response = Response.builder()
+                .content(dtoOfApplyEmploy)
+                .message("매칭이 완료되었습니다.")
+                .build();
+
+        return new ResponseEntity(response, HttpStatus.OK);
     }
 
     /**

@@ -36,4 +36,9 @@ public class DtoOfApplyEmploy {
      */
     private String employeeNickname;
 
+    /**
+     * 고용 정보 id
+     */
+    private Long employId;
+
 }

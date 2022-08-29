@@ -52,24 +52,7 @@ public class EmployController {
     }
 
     /**
-     * 고용자가 고용정보를 취소하는 메서드
-     * @param authUser : 요청자 Authentication 정보
-     * @param employId : 취소할 고용정보 id(pk)
-     * @return 서버 응답 Dto
-     */
-    @DeleteMapping("/api/employ/fire/{employId}")
-    public ResponseEntity cancelEmployByEmployer(@AuthenticationPrincipal AuthUser authUser, @PathVariable Long employId){
-        DtoOfCancelByEmploy dtoOfCancelByEmploy =
-                employService.cancelEmployByEmploy(Long.parseLong(authUser.getId()), employId);
-        Response response = Response.builder()
-                .content(dtoOfCancelByEmploy)
-                .message("성공적으로 취소되었습니다.")
-                .build();
-        return new ResponseEntity(response, HttpStatus.OK);
-    }
-
-    /**
-     * 피고용자가 고용정보를 취소하는 메서드
+     * 고용정보를 취소하는 메서드
      * @param authUser : 요청자 Authentication 정보
      * @param employId : 취소 할 고용 정보
      * @return 서버 응답 Dto
@@ -77,7 +60,7 @@ public class EmployController {
     @DeleteMapping("/api/employ/{employId}")
     public ResponseEntity cancelEmployByEmployee(@AuthenticationPrincipal AuthUser authUser, @PathVariable Long employId){
         DtoOfCancelByEmploy dtoOfCancelByEmploy =
-                employService.cancelEmployByEmploy(Long.parseLong(authUser.getId()), employId);
+                employService.cancelEmploy(Long.parseLong(authUser.getId()), employId);
         Response response = Response.builder()
                 .content(dtoOfCancelByEmploy)
                 .message("성공적으로 취소되었습니다.")

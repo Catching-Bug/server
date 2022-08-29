@@ -95,9 +95,9 @@ public class EmployServiceTest {
                 .build();
         given(memberService.getMember(anyLong())).willReturn(memberEntity);
         given(boardService.getBoardEntity(anyLong())).willReturn(boardEntity);
-        given(employRepository.findByEmployerAndBoard(any(), any())).willReturn(Optional.of(employEntity));
+        given(employRepository.findById(anyLong())).willReturn(Optional.of(employEntity));
         //when
-        DtoOfCancelByEmploy actualResult = employService.cancelEmployByEmployer(1L, 1L);
+        DtoOfCancelByEmploy actualResult = employService.cancelEmploy(1L, 1L);
         //then
         Assertions.assertEquals(expectedResult.getEmployeeId(), actualResult.getEmployeeId());
         Assertions.assertEquals(expectedResult.getBoardTitle(), actualResult.getBoardTitle());
@@ -106,24 +106,6 @@ public class EmployServiceTest {
         Assertions.assertEquals(expectedResult.getEmployerId(), actualResult.getEmployerId());
         Assertions.assertEquals(expectedResult.getEmployerNickname(), actualResult.getEmployerNickname());
 
-
-    }
-
-    @DisplayName("고용 정보가 존재하지 않으면 NoPermissionException 가 발생한다.")
-    @Test
-    public void check_NoPermissionException() throws Exception{
-
-        Member memberEntity = setUpMember();
-        Board boardEntity = setUpBoard();
-
-        //given & mocking
-        given(employRepository.findByEmployerAndBoard(any(), any())).willReturn(Optional.ofNullable(null));
-
-        //when
-        //then
-        Assertions.assertThrows(NoPermissionException.class, () -> {
-           employService.checkCancelAuthorityByEmployer(memberEntity, boardEntity);
-        });
 
     }
 
@@ -154,7 +136,7 @@ public class EmployServiceTest {
         given(boardService.getBoardEntity(anyLong())).willReturn(boardEntity);
         given(employRepository.findById(anyLong())).willReturn(Optional.of(employEntity));
         //when
-        DtoOfCancelByEmploy actualResult = employService.cancelEmployByEmploy(1L, 1L);
+        DtoOfCancelByEmploy actualResult = employService.cancelEmploy(1L, 1L);
         //then
         Assertions.assertEquals(expectedResult.getEmployeeId(), actualResult.getEmployeeId());
         Assertions.assertEquals(expectedResult.getBoardTitle(), actualResult.getBoardTitle());
@@ -165,20 +147,24 @@ public class EmployServiceTest {
 
 
     }
-    @DisplayName("고용 정보가 존재하지 않으면 NoPermissionException 가 발생한다.")
+    @DisplayName("고용 정보의 member id와 요청자 id가 같지 않으면 NoPermissionException 가 발생한다.")
     @Test
     public void check_NoPermissionException_in_employee() throws Exception{
-
+        //given
         Member memberEntity = setUpMember();
         Board boardEntity = setUpBoard();
-
-        //given & mocking
-        given(employRepository.findByEmployeeAndBoard(any(), any())).willReturn(Optional.ofNullable(null));
+        Employ employEntity = Employ.builder()
+                .employee(memberEntity)
+                        .employer(memberEntity)
+                .board(boardEntity)
+                .id(1L)
+                .expiryTime(LocalDateTime.now().plusMinutes(10))
+                                .build();
 
         //when
         //then
         Assertions.assertThrows(NoPermissionException.class, () -> {
-            employService.checkCancelAuthorityByEmployee(memberEntity, boardEntity);
+            employService.checkStatus(employEntity, 2L);
         });
 
     }
@@ -197,9 +183,9 @@ public class EmployServiceTest {
                 .expiryTime(LocalDateTime.now().plusMinutes(10L))
                 .build();
 
-        given(employRepository.findByEmployerAndBoard(any(), any())).willReturn(Optional.of(expectedEmploy));
+        given(employRepository.findById(anyLong())).willReturn(Optional.of(expectedEmploy));
         //when
-        Employ actualResult = employService.checkCancelAuthorityByEmployer(memberEntity, boardEntity);
+        Employ actualResult = employService.getEmployEntity(1L);
 
         //then
         Assertions.assertEquals(expectedEmploy.getId(), actualResult.getId());

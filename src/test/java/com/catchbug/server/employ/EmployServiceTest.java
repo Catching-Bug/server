@@ -152,7 +152,7 @@ public class EmployServiceTest {
                 .build();
         given(memberService.getMember(anyLong())).willReturn(memberEntity);
         given(boardService.getBoardEntity(anyLong())).willReturn(boardEntity);
-        given(employRepository.findByEmployeeAndBoard(any(), any())).willReturn(Optional.of(employEntity));
+        given(employRepository.findById(anyLong())).willReturn(Optional.of(employEntity));
         //when
         DtoOfCancelByEmploy actualResult = employService.cancelEmployByEmploy(1L, 1L);
         //then

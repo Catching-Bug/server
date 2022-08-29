@@ -3,7 +3,7 @@ package com.catchbug.server.employ;
 import com.catchbug.server.board.Board;
 import com.catchbug.server.board.BoardService;
 import com.catchbug.server.employ.dto.DtoOfApplyEmploy;
-import com.catchbug.server.employ.dto.DtoOfCancelByEmployer;
+import com.catchbug.server.employ.dto.DtoOfCancelByEmploy;
 import com.catchbug.server.employ.exception.NoPermissionException;
 import com.catchbug.server.member.Member;
 import com.catchbug.server.member.MemberService;
@@ -85,9 +85,11 @@ public class EmployServiceTest {
                 .expiryTime(LocalDateTime.now().plusMinutes(10))
                                         .build();
 
-        DtoOfCancelByEmployer expectedResult = DtoOfCancelByEmployer.builder()
+        DtoOfCancelByEmploy expectedResult = DtoOfCancelByEmploy.builder()
                 .employeeId(memberEntity.getId())
                 .employeeNickname(memberEntity.getNickname())
+                .employerNickname(memberEntity.getNickname())
+                .employerId(memberEntity.getId())
                 .boardTitle(boardEntity.getTitle())
                 .boardId(boardEntity.getId())
                 .build();
@@ -95,12 +97,14 @@ public class EmployServiceTest {
         given(boardService.getBoardEntity(anyLong())).willReturn(boardEntity);
         given(employRepository.findByEmployerAndBoard(any(), any())).willReturn(Optional.of(employEntity));
         //when
-        DtoOfCancelByEmployer actualResult = employService.cancelEmployByEmployer(1L, 1L);
+        DtoOfCancelByEmploy actualResult = employService.cancelEmployByEmployer(1L, 1L);
         //then
         Assertions.assertEquals(expectedResult.getEmployeeId(), actualResult.getEmployeeId());
         Assertions.assertEquals(expectedResult.getBoardTitle(), actualResult.getBoardTitle());
         Assertions.assertEquals(expectedResult.getEmployeeNickname(), actualResult.getEmployeeNickname());
         Assertions.assertEquals(expectedResult.getBoardId(), actualResult.getBoardId());
+        Assertions.assertEquals(expectedResult.getEmployerId(), actualResult.getEmployerId());
+        Assertions.assertEquals(expectedResult.getEmployerNickname(), actualResult.getEmployerNickname());
 
 
     }
@@ -119,6 +123,62 @@ public class EmployServiceTest {
         //then
         Assertions.assertThrows(NoPermissionException.class, () -> {
            employService.checkCancelAuthorityByEmployer(memberEntity, boardEntity);
+        });
+
+    }
+
+    @DisplayName("피고용자가 고용을 취소할 수 있다.")
+    @Test
+    public void cancel_Employ_ByEmployee() throws Exception{
+
+        //given
+        Member memberEntity = setUpMember();
+        Board boardEntity = setUpBoard();
+        Employ employEntity = Employ.builder()
+                .employer(memberEntity)
+                .employee(memberEntity)
+                .board(boardEntity)
+                .id(1L)
+                .expiryTime(LocalDateTime.now().plusMinutes(10))
+                .build();
+
+        DtoOfCancelByEmploy expectedResult = DtoOfCancelByEmploy.builder()
+                .employeeId(memberEntity.getId())
+                .employeeNickname(memberEntity.getNickname())
+                .employerNickname(memberEntity.getNickname())
+                .employerId(memberEntity.getId())
+                .boardTitle(boardEntity.getTitle())
+                .boardId(boardEntity.getId())
+                .build();
+        given(memberService.getMember(anyLong())).willReturn(memberEntity);
+        given(boardService.getBoardEntity(anyLong())).willReturn(boardEntity);
+        given(employRepository.findByEmployeeAndBoard(any(), any())).willReturn(Optional.of(employEntity));
+        //when
+        DtoOfCancelByEmploy actualResult = employService.cancelEmployByEmploy(1L, 1L);
+        //then
+        Assertions.assertEquals(expectedResult.getEmployeeId(), actualResult.getEmployeeId());
+        Assertions.assertEquals(expectedResult.getBoardTitle(), actualResult.getBoardTitle());
+        Assertions.assertEquals(expectedResult.getEmployeeNickname(), actualResult.getEmployeeNickname());
+        Assertions.assertEquals(expectedResult.getBoardId(), actualResult.getBoardId());
+        Assertions.assertEquals(expectedResult.getEmployerId(), actualResult.getEmployerId());
+        Assertions.assertEquals(expectedResult.getEmployerNickname(), actualResult.getEmployerNickname());
+
+
+    }
+    @DisplayName("고용 정보가 존재하지 않으면 NoPermissionException 가 발생한다.")
+    @Test
+    public void check_NoPermissionException_in_employee() throws Exception{
+
+        Member memberEntity = setUpMember();
+        Board boardEntity = setUpBoard();
+
+        //given & mocking
+        given(employRepository.findByEmployeeAndBoard(any(), any())).willReturn(Optional.ofNullable(null));
+
+        //when
+        //then
+        Assertions.assertThrows(NoPermissionException.class, () -> {
+            employService.checkCancelAuthorityByEmployee(memberEntity, boardEntity);
         });
 
     }

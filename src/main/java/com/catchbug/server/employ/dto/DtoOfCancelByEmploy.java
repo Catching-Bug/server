@@ -4,7 +4,7 @@ import lombok.Builder;
 import lombok.Getter;
 
 /**
- * <h1>DtoOfCancelByEmployer</h1>
+ * <h1>DtoOfCancelByEmploy</h1>
  * <p>
  *     Dto Of Response after Cancel employ
  * </p>
@@ -18,7 +18,7 @@ import lombok.Getter;
  */
 @Getter
 @Builder
-public class DtoOfCancelByEmployer {
+public class DtoOfCancelByEmploy {
 
     /**
      * 취소된 boardTitle
@@ -39,4 +39,14 @@ public class DtoOfCancelByEmployer {
      * 취소된 고용정보의 피고용자 id
      */
     private Long employeeId;
+
+    /**
+     * 취소된 고용정보의 고용자 닉네임
+     */
+    private String employerNickname;
+
+    /**
+     * 취소된 고용정보의 고용자 id
+     */
+    private Long employerId;
 }

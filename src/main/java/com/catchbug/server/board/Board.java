@@ -125,9 +125,6 @@ public class Board extends BoardBaseEntity {
      */
     private double longitude;
 
-    @Version
-    private Long version;
-
     public void checkValidBoard(){
         //fixme 하드코딩 수정해야함
         if(this.getCreatedTime().isBefore(LocalDateTime.now().minusMinutes(10L))){

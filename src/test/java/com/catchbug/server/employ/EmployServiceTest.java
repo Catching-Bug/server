@@ -13,12 +13,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.orm.ObjectOptimisticLockingFailureException;
+import org.springframework.context.ApplicationEventPublisher;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import static com.catchbug.server.board.BoardServiceTest.setUpBoard;
 import static com.catchbug.server.jwt.util.JwtFactoryTest.setUpMember;
@@ -29,6 +27,8 @@ import static org.mockito.BDDMockito.given;
 @SpringBootTest(classes = EmployService.class)
 public class EmployServiceTest {
 
+    @MockBean
+    private ApplicationEventPublisher applicationEventPublisher;
     @MockBean
     private EmployRepository employRepository;
 
@@ -146,43 +146,6 @@ public class EmployServiceTest {
 
     }
 
-    @Test
-    @DisplayName("Emply 요청을 n 번 호출할 때, 충돌이 일어났을 경우 최초의 employ가 등록되어야 하고, ObjectOptimistic" +
-            "LockingFailureException이 발생되어야 함")
-    void getBoard() throws InterruptedException {
-        //given
-        Member employerEntity = setUpMember();
-        //given
-        given(memberService.getMember(anyLong())).willReturn(mockMemberEntity);
-        given(boardService.getBoardEntity(anyLong())).willReturn(mockBoardEntity);
-        given(mockBoardEntity.getHost()).willReturn(employerEntity);
-        given(mockBoardEntity.getId()).willReturn(1L);
-        given(mockMemberEntity.getNickname()).willReturn("employee");
-        given(mockBoardEntity.getCreatedTime()).willReturn(LocalDateTime.now());
-
-        ExecutorService service = Executors.newFixedThreadPool(10);
-
-
-        //when
-        for (int i = 0; i < 1000; i++) {
-            int finalI = i;
-            service.execute(() -> {
-                try {
-                    DtoOfApplyEmploy actualResult = employService.apply((long) finalI, (long) finalI);
-                    System.out.println("충돌 안남!");
-                } catch (ObjectOptimisticLockingFailureException lockingFailureException) {
-                    System.out.println("충돌 !");
-                    // 예외를 잡아 복구작업을 해주면됩니다.
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            });
-        }
-        Thread.sleep(1000);
-        //then
-
-
-    }
 
 
 

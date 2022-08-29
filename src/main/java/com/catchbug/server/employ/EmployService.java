@@ -52,7 +52,6 @@ public class EmployService {
         }catch (Exception e){
             throw new TransactionException("이미 배치되었습니다.");
         }
-        System.out.println("Publish Event");
         eventPublisher.publishEvent(MatchedEvent.builder().board(boardEntity).status(Status.MATCHED).build());
 
         return DtoOfApplyEmploy.builder()

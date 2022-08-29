@@ -17,9 +17,7 @@ public class BoardEmployEventHandler{
     private final BoardService boardService;
     @Async
     @TransactionalEventListener
-    public void updateStatus(MatchedEvent matchedEvent) throws InterruptedException {
-        Thread.sleep(5000L); // 5초 thread sleep
-        System.out.println("Update Board Status Event 실행");
+    public void updateStatus(MatchedEvent matchedEvent) {
         Board boardEntity = matchedEvent.getBoard();
         boardEntity.updateStatus(matchedEvent.getStatus());
         boardService.saveEntity(boardEntity);

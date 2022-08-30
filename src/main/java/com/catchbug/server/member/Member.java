@@ -2,6 +2,7 @@ package com.catchbug.server.member;
 
 import com.catchbug.server.board.Board;
 import com.catchbug.server.board.exception.AlreadyHiredException;
+import com.catchbug.server.comment.Comment;
 import com.catchbug.server.employ.Employ;
 import com.catchbug.server.location.Location;
 import lombok.AllArgsConstructor;
@@ -61,13 +62,19 @@ public class Member {
     /**
      * 사용자가 생성한 글
      */
-    @OneToMany(mappedBy = "host", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "host", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Board> hostingBoards;
+
+    /**
+     * 댓글 리스트
+     */
+    @OneToMany(mappedBy = "commenter", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Comment> commentList;
 
     /**
      * 사용자가 등록한 위치
      */
-    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Location> locations;
 
     /**

@@ -4,6 +4,7 @@ import com.catchbug.server.board.auditing.BoardBaseEntity;
 import com.catchbug.server.board.dto.DtoOfUpdateBoard;
 import com.catchbug.server.board.exception.AlreadyHiredException;
 import com.catchbug.server.board.exception.ExpiredBoardException;
+import com.catchbug.server.comment.Comment;
 import com.catchbug.server.employ.Employ;
 import com.catchbug.server.member.Member;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -15,6 +16,7 @@ import org.hibernate.annotations.BatchSize;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * <h1>Board</h1>
@@ -94,6 +96,12 @@ public class Board extends BoardBaseEntity {
     @Column(name = "STATUS")
     @Enumerated(EnumType.STRING)
     private Status status;
+
+    /**
+     * 댓글 리스트
+     */
+    @OneToMany(mappedBy = "board", fetch = FetchType.LAZY)
+    List<Comment> commentList;
 
     /**
      * 도, 시

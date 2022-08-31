@@ -26,9 +26,6 @@ Catch-Bug web application
 # 🪴 Git Convention
 [✅ Git Convention](https://github.com/Catching-Bug/server/wiki/Git-Convension)
 
-
-Git Flow
-
 # 📒 Tech Blog
 해당 프로젝트를 진행하면서 각종 생각과 내용을 기록한 블로그 시리즈입니다.
 

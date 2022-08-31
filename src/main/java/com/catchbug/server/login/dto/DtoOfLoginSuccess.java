@@ -21,6 +21,10 @@ import lombok.Getter;
 public class DtoOfLoginSuccess {
 
     /**
+     * 멤버 id
+     */
+    private Long id;
+    /**
      * 자체 발급 엑세스 토큰
      */
     private String accessToken;
@@ -41,8 +45,8 @@ public class DtoOfLoginSuccess {
     private String nickName;
 
     @Builder
-    public DtoOfLoginSuccess(String nickname, String accessToken, String refreshToken, Gender gender) {
-
+    public DtoOfLoginSuccess(Long id, String nickname, String accessToken, String refreshToken, Gender gender) {
+        this.id = id;
         this.nickName = nickname;
         this.accessToken = accessToken;
         this.refreshToken = refreshToken;

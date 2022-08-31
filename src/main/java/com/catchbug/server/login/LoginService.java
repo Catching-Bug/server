@@ -56,10 +56,12 @@ public class LoginService {
         Member memberEntity = memberService.login(userProfile);
         DtoOfJwt dtoOfJwt = jwtService.createTokenDto(memberEntity);
         DtoOfLoginSuccess dtoOfLoginSuccess = DtoOfLoginSuccess.builder()
+                .id(memberEntity.getId())
                 .nickname(memberEntity.getNickname())
                 .accessToken(dtoOfJwt.getAccessToken())
                 .refreshToken(dtoOfJwt.getRefreshToken())
                 .gender(memberEntity.getGender())
+
                 .build();
 
         return dtoOfLoginSuccess;

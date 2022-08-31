@@ -4,6 +4,7 @@ import com.catchbug.server.board.Board;
 import com.catchbug.server.board.BoardService;
 import com.catchbug.server.comment.dto.DtoOfCreateComment;
 import com.catchbug.server.comment.dto.DtoOfCreatedComment;
+import com.catchbug.server.comment.dto.DtoOfGetComment;
 import com.catchbug.server.member.Member;
 import com.catchbug.server.member.MemberService;
 import org.junit.jupiter.api.Assertions;
@@ -13,8 +14,14 @@ import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import static com.catchbug.server.board.BoardServiceTest.setUpBoard;
 import static com.catchbug.server.jwt.util.JwtFactoryTest.setUpMember;
@@ -68,5 +75,25 @@ public class CommentServiceTest {
         Assertions.assertEquals(mockCommentEntity.getContent(), actualResult.getContent());
         Assertions.assertEquals(memberEntity.getNickname(), actualResult.getCommenterNickname());
     }
+
+    @DisplayName("댓글을 page 단위로 조회할 수 있다.")
+    @Test
+    public void get_comments_pagination_OnSuccess() throws Exception{
+
+        //given & mocking
+        Pageable pageable = PageRequest.of(0, 10);
+        List<DtoOfGetComment> commentList = new ArrayList<DtoOfGetComment>();
+
+        Page<DtoOfGetComment> expectedResult = new PageImpl<DtoOfGetComment>(commentList, pageable, 10);
+
+        given(commentRepository.findByBoardId(anyLong(), any())).willReturn(expectedResult);
+        //when
+        Page<DtoOfGetComment> actualResult = commentService.getComments(1L, pageable);
+
+        //then
+        Assertions.assertEquals(expectedResult.getTotalElements(), actualResult.getTotalElements());
+        Assertions.assertEquals(expectedResult.getContent().size(), actualResult.getContent().size());
+    }
+
 
 }

@@ -2,15 +2,17 @@ package com.catchbug.server.comment;
 
 import com.catchbug.server.comment.dto.DtoOfCreateComment;
 import com.catchbug.server.comment.dto.DtoOfCreatedComment;
+import com.catchbug.server.comment.dto.DtoOfGetComment;
+import com.catchbug.server.comment.dto.DtoOfGetComments;
 import com.catchbug.server.common.response.Response;
 import com.catchbug.server.jwt.model.AuthUser;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * <h1>CommentController</h1>
@@ -39,7 +41,7 @@ public class CommentController {
      * @return : 서버 응답 데이터
      */
     @PostMapping("/api/comment/{boardId}")
-    public ResponseEntity createComment(@AuthenticationPrincipal AuthUser authUser, @PathVariable Long boardId, DtoOfCreateComment dtoOfCreateComment){
+    public ResponseEntity createComment(@AuthenticationPrincipal AuthUser authUser, @PathVariable Long boardId, @RequestBody DtoOfCreateComment dtoOfCreateComment){
 
         DtoOfCreatedComment dtoOfCreatedComment = commentService.
                 createComment(Long.valueOf(authUser.getId()), boardId, dtoOfCreateComment);
@@ -51,5 +53,16 @@ public class CommentController {
 
         return new ResponseEntity(response, HttpStatus.OK);
 
+    }
+
+    @GetMapping("/api/comments/{boardId}")
+    public ResponseEntity getComments(@PathVariable Long boardId, Pageable pageable){
+        Page<DtoOfGetComment> comments = commentService.getComments(boardId, pageable);
+        Response response = Response.builder()
+                .message("정상적으로 댓글을 조회했습니다.")
+                .content(comments)
+                .build();
+
+        return new ResponseEntity(response, HttpStatus.OK);
     }
 }

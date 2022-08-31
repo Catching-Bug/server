@@ -4,10 +4,16 @@ import com.catchbug.server.board.Board;
 import com.catchbug.server.board.BoardService;
 import com.catchbug.server.comment.dto.DtoOfCreateComment;
 import com.catchbug.server.comment.dto.DtoOfCreatedComment;
+import com.catchbug.server.comment.dto.DtoOfGetComment;
+import com.catchbug.server.comment.dto.DtoOfGetComments;
 import com.catchbug.server.member.Member;
 import com.catchbug.server.member.MemberService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.util.stream.Collectors;
 
 /**
  * <h1>CommentService</h1>
@@ -40,7 +46,7 @@ public class CommentService {
     public DtoOfCreatedComment createComment(Long memberId, Long boardId, DtoOfCreateComment dtoOfCreateComment){
         Member memberEntity = memberService.getMember(memberId);
         Board boardEntity = boardService.getBoardEntity(boardId);
-
+        System.out.println("content = " + dtoOfCreateComment.getContent());
         Comment commentEntity = Comment.builder()
                 .commenter(memberEntity)
                 .board(boardEntity)
@@ -55,6 +61,27 @@ public class CommentService {
                 .content(savedCommentEntity.getContent())
                 .commentedAt(savedCommentEntity.getCommentedAt())
                 .build();
+
+    }
+
+    public Page<DtoOfGetComment> getComments(Long boardId, Pageable pageable){
+
+        System.out.println("----------------");
+        Page<DtoOfGetComment> comments = commentRepository.findByBoardId(boardId, pageable);
+        System.out.println("----------------");
+
+        return comments;
+//        return DtoOfGetComments.builder()
+//                .comments(comments.getContent().stream()
+//                        .map(v -> DtoOfGetComment
+//                                .builder()
+//                                .commentedAt(v.getCommentedAt())
+//                                .nickname(v.getCommenter().getNickname())
+//                                .content(v.getContent())
+//                                .build())
+//                        .collect(Collectors.toList()))
+//                .size(comments.getSize())
+//                .build();
 
     }
 }

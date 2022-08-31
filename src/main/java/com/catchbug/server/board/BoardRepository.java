@@ -50,7 +50,7 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
      * @return : 조회된 게시 글
      */
     @EntityGraph(attributePaths = {"host"}, type = EntityGraph.EntityGraphType.FETCH)
-    @Query("select b from Board b left join b.host where b.town = :town")
+    @Query("select b from Board b left join b.host left join b.employ where b.town = :town")
     Page<Board> findAllByTown(@Param("town") String town, Pageable pageable);
 
     /**

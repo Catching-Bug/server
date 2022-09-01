@@ -66,22 +66,9 @@ public class CommentService {
 
     public Page<DtoOfGetComment> getComments(Long boardId, Pageable pageable){
 
-        System.out.println("----------------");
         Page<DtoOfGetComment> comments = commentRepository.findByBoardId(boardId, pageable);
-        System.out.println("----------------");
 
         return comments;
-//        return DtoOfGetComments.builder()
-//                .comments(comments.getContent().stream()
-//                        .map(v -> DtoOfGetComment
-//                                .builder()
-//                                .commentedAt(v.getCommentedAt())
-//                                .nickname(v.getCommenter().getNickname())
-//                                .content(v.getContent())
-//                                .build())
-//                        .collect(Collectors.toList()))
-//                .size(comments.getSize())
-//                .build();
 
     }
 }

@@ -116,7 +116,7 @@ public class BoardController {
         return new ResponseEntity(response, HttpStatus.OK);
     }
 
-    @GetMapping("/api/test")
+    @GetMapping("/api/boards")
     public ResponseEntity<?> getBoardsList(@RequestParam String townName, Pageable pageable){
         DtoOfGetTownBoards boards =
                 boardService.getTownBoards(townName, pageable);

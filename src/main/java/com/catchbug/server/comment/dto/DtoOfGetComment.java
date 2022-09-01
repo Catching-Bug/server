@@ -7,5 +7,6 @@ public interface DtoOfGetComment {
     String getContent();
     LocalDateTime getCommentedAt();
     String getCommenterNickname();
+    Long getId();
 
 }

@@ -1,7 +1,9 @@
 package com.catchbug.server.location.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotNull;
 
@@ -19,15 +21,12 @@ import javax.validation.constraints.NotNull;
  * @see com.catchbug.server.location.LocationService
  * @author younghoCha
  */
+@NoArgsConstructor
+@AllArgsConstructor
 @Getter
 @Builder
 public class DtoOfCreateLocation {
 
-    /**
-     * 위치 이름
-     */
-    @NotNull
-    private String locationName;
 
     /**
      * 생성을 위한 위도

@@ -5,6 +5,7 @@ import com.catchbug.server.board.BoardService;
 import com.catchbug.server.employ.dto.DtoOfApplyEmploy;
 import com.catchbug.server.employ.dto.DtoOfCancelByEmploy;
 import com.catchbug.server.employ.exception.NoPermissionException;
+import com.catchbug.server.employ.exception.NotFoundEmployException;
 import com.catchbug.server.member.Member;
 import com.catchbug.server.member.MemberService;
 import org.junit.jupiter.api.Assertions;
@@ -200,9 +201,17 @@ public class EmployServiceTest {
 
     }
 
+    @DisplayName("Employ 정보가 없으면 NotFoundEmployException 이 발생해야한다.")
+    @Test
+    public void check_NotFoundEmployException() throws Exception{
 
+        //given
+        //when
+        given(employRepository.findById(anyLong())).willReturn(Optional.ofNullable(null));
+        //then
+        Assertions.assertThrows(NotFoundEmployException.class, () -> {
+            employService.getEmployEntity(1L);
+        });
+    }
 
-
-
-    
 }

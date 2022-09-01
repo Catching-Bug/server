@@ -8,6 +8,7 @@ import com.catchbug.server.member.dto.DtoOfGetLocation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -35,7 +36,7 @@ public class LocationController {
      * @return 요청한 유저가 사전등록한 위치 정보 객체 리스트 dto
      */
     @GetMapping("/api/locations")
-    public ResponseEntity<?> getLocations(AuthUser authUser){
+    public ResponseEntity<?> getLocations(@AuthenticationPrincipal  AuthUser authUser){
         List<DtoOfGetLocation> locationList = locationService.getLocations(Long.parseLong(authUser.getId()));
         Response response = Response.builder()
                 .content(locationList)

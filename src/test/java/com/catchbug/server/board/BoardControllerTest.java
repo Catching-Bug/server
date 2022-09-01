@@ -2,6 +2,7 @@ package com.catchbug.server.board;
 
 import com.catchbug.server.board.dto.DtoOfCreatedBoard;
 import com.catchbug.server.board.dto.DtoOfGetBoard;
+import com.catchbug.server.board.dto.DtoOfGetRegionCount;
 import com.catchbug.server.common.advice.BoardExceptionAdvice;
 import com.catchbug.server.common.response.Response;
 import com.catchbug.server.jwt.dto.DtoOfUserDataFromJwt;
@@ -24,6 +25,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.web.context.WebApplicationContext;
+
+import java.util.List;
 
 import static com.catchbug.server.board.BoardServiceTest.setUpBoard;
 import static com.catchbug.server.jwt.util.JwtFactoryTest.setUpMember;
@@ -152,25 +155,11 @@ public class BoardControllerTest {
         //given & mocking
         Member member = setUpMember();
         String accessToken = setUpToken(member, 10000000L, JwtProviderTest.TokenType.ACCESS);
-        Board boardEntity = setUpBoard();
-        DtoOfGetBoard expectedResult = DtoOfGetBoard.builder()
-                .id(boardEntity.getId())
-                .region(boardEntity.getRegion())
-                .town(boardEntity.getTown())
-                .city(boardEntity.getCity())
-                .detailLocation(boardEntity.getDetailLocation())
-                .roomContent(boardEntity.getContent())
-                .roomTitle(boardEntity.getTitle())
-                .longitude(boardEntity.getLongitude())
-                .latitude(boardEntity.getLatitude())
-                .build();
         given(jwtProvider.getUserData(anyString())).willReturn(DtoOfUserDataFromJwt.builder()
                 .id(1L)
                 .nickname(member.getNickname())
                 .gender(member.getGender())
                 .build());
-        given(boardService.getBoard(anyLong())).willReturn(expectedResult);
-
         //when
         //then
         this.mockMvc.perform(
@@ -178,9 +167,77 @@ public class BoardControllerTest {
                         .header("Authorization", "Bearer " + accessToken)
                         .contentType(MediaType.APPLICATION_JSON)
 
-        ).andExpect(status().isOk());
+        ).andExpect(status().isOk())
+                .andDo(print());
+    }
 
+    @DisplayName("city 단위로 정상적으로 게시글 개수가 조회되어야 한다.")
+    @Test
+    public void get_board_count_OnCity() throws Exception{
 
+        //given & mocking
+        Member member = setUpMember();
+        String accessToken = setUpToken(member, 10000000L, JwtProviderTest.TokenType.ACCESS);
+        given(jwtProvider.getUserData(anyString())).willReturn(DtoOfUserDataFromJwt.builder()
+                .id(1L)
+                .nickname(member.getNickname())
+                .gender(member.getGender())
+                .build());
+        //when
+        //then
+        this.mockMvc.perform(
+                        MockMvcRequestBuilders.get("/api/cities/count")
+                                .header("Authorization", "Bearer " + accessToken)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .param("regionName", "서울특별시")
+                ).andExpect(status().isOk())
+                .andDo(print());
+    }
+
+    @DisplayName("city 단위로 정상적으로 게시글 개수가 조회되어야 한다.")
+    @Test
+    public void get_board_count_OnTown() throws Exception{
+
+        //given & mocking
+        Member member = setUpMember();
+        String accessToken = setUpToken(member, 10000000L, JwtProviderTest.TokenType.ACCESS);
+        given(jwtProvider.getUserData(anyString())).willReturn(DtoOfUserDataFromJwt.builder()
+                .id(1L)
+                .nickname(member.getNickname())
+                .gender(member.getGender())
+                .build());
+        //when
+        //then
+        this.mockMvc.perform(
+                        MockMvcRequestBuilders.get("/api/towns/count")
+                                .header("Authorization", "Bearer " + accessToken)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .param("cityName", "창원시")
+                ).andExpect(status().isOk())
+                .andDo(print());
+    }
+
+    @DisplayName("town 내에 존재하는 게시글들을 조회한다.")
+    @Test
+    public void get_boards() throws Exception{
+
+        //given & mocking
+        Member member = setUpMember();
+        String accessToken = setUpToken(member, 10000000L, JwtProviderTest.TokenType.ACCESS);
+        given(jwtProvider.getUserData(anyString())).willReturn(DtoOfUserDataFromJwt.builder()
+                .id(1L)
+                .nickname(member.getNickname())
+                .gender(member.getGender())
+                .build());
+        //when
+        //then
+        this.mockMvc.perform(
+                        MockMvcRequestBuilders.get("/api/boards")
+                                .header("Authorization", "Bearer " + accessToken)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .param("townName", "신월동")
+                ).andExpect(status().isOk())
+                .andDo(print());
     }
 
 

@@ -1,32 +1,19 @@
 package com.catchbug.server.board;
 
-import com.catchbug.server.board.dto.DtoOfCreatedBoard;
 import com.catchbug.server.board.dto.DtoOfGetBoard;
-import com.catchbug.server.board.dto.DtoOfGetRegionCount;
-import com.catchbug.server.common.advice.BoardExceptionAdvice;
-import com.catchbug.server.common.response.Response;
 import com.catchbug.server.jwt.dto.DtoOfUserDataFromJwt;
-import com.catchbug.server.jwt.handler.JwtAuthenticationFailureHandler;
 import com.catchbug.server.jwt.util.JwtProvider;
 import com.catchbug.server.jwt.util.JwtProviderTest;
 import com.catchbug.server.member.Member;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.web.context.WebApplicationContext;
-
-import java.util.List;
 
 import static com.catchbug.server.board.BoardServiceTest.setUpBoard;
 import static com.catchbug.server.jwt.util.JwtFactoryTest.setUpMember;

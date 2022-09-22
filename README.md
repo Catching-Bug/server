@@ -13,7 +13,7 @@ Catch-Bug web application
 |:-----|
 |[✅ DB 파티셔닝 고찰](https://github.com/Catching-Bug/server/wiki/DB-%ED%8C%8C%ED%8B%B0%EC%85%94%EB%8B%9D-%EA%B3%A0%EC%B0%B0)|
 |[✅ 더미데이터 준비](https://github.com/Catching-Bug/server/wiki/%EB%8D%94%EB%AF%B8%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%A4%80%EB%B9%84%ED%95%98%EA%B8%B0)|
-|[✅ 동시성 이슈](https://github.com/Catching-Bug/server/wiki/%EB%8D%94%EB%AF%B8%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%A4%80%EB%B9%84%ED%95%98%EA%B8%B0)|
+|[✅ 동시성 이슈](https://github.com/Catching-Bug/server/wiki/%EB%8F%99%EC%8B%9C%EC%84%B1-%EC%9D%B4%EC%8A%88)|
 |[✅ 이벤트 적용 고찰](https://github.com/Catching-Bug/server/wiki/%EC%9D%B4%EB%B2%A4%ED%8A%B8-%EC%A0%81%EC%9A%A9-%EA%B3%A0%EC%B0%B0)|
 |[✅ Entity 도메인 적용 고찰](https://github.com/Catching-Bug/server/wiki/Employ-%EC%97%94%ED%8B%B0%ED%8B%B0-%EC%A0%81%EC%9A%A9-%EA%B3%A0%EC%B0%B0)|
 |[✅ 위치 조회 API 대용량 처리 방안](https://github.com/Catching-Bug/server/wiki/%EC%9C%84%EC%B9%98-%EC%A1%B0%ED%9A%8C-API-%EB%8C%80%EC%9A%A9%EB%9F%89-%EC%B2%98%EB%A6%AC-%EB%B0%A9%EC%95%88)|

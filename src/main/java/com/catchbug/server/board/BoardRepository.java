@@ -88,7 +88,7 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
      * @param boardId : 조회하려는 게시글 id
      * @return : 조회된 Board Entity
      */
-    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @Lock(LockModeType.PESSIMISTIC_READ)
     @Query("select b from Board b where b.id = :boardId")
     Optional<Board> findWithIdForUpdate(@Param("boardId") Long boardId);
 }

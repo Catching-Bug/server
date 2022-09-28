@@ -1,71 +1,44 @@
 package com.catchbug.server.config;
 
-import com.catchbug.server.jwt.filter.JwtAuthenticateFilter;
-import com.catchbug.server.jwt.handler.JwtAuthenticationFailureHandler;
-import com.catchbug.server.jwt.matcher.FilterSkipMatcher;
-import com.catchbug.server.jwt.provider.JwtAuthenticationProvider;
+import com.catchbug.server.jwt.filter.JwtAuthenticationFilter;
+import com.catchbug.server.jwt.util.JwtProvider;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import javax.servlet.Filter;
-import java.util.List;
-
-
-@Configuration
+/**
+ * <h1>SecurityConfg</h1>
+ * <p>
+ *     configuration for Security
+ * </p>
+ * <p>
+ *    시큐리티 설정 클래스
+ * </p>
+ * @author younghoCha
+ */
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    @Autowired
-    private JwtAuthenticationProvider jwtAuthenticationProvider;
+    private final JwtProvider jwtProvider;
 
-    @Autowired
-    private JwtAuthenticationFailureHandler jwtAuthenticationFailureHandler;
-    // jwt 인증 필터
-    public Filter jwtAuthenticationFilter() throws Exception {
-        FilterSkipMatcher filterSkipMatcher = new FilterSkipMatcher(
-                List.of("/api/refresh", "/api/logout", "/token/refresh"),
-                List.of("/api/**")
-        );
-        //필터 생성
-        JwtAuthenticateFilter jwtAuthenticateFilter = new JwtAuthenticateFilter(filterSkipMatcher);
-
-        //필터 인증 매니저 설정
-        jwtAuthenticateFilter.setAuthenticationManager(super.authenticationManager());
-
-        //실패 Handler 설정
-        jwtAuthenticateFilter.setAuthenticationFailureHandler(jwtAuthenticationFailureHandler);
-        return jwtAuthenticateFilter;
-    }
-    // authentication manager setting
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        super.configure(auth);
-        auth.authenticationProvider(jwtAuthenticationProvider);
-    }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        // login disable
-        http.formLogin().disable();
-
-        // csrf disable
         http.csrf().disable();
-
-        // http basic diable
-        http.httpBasic().disable();
-
-        // JWT
-        // 필터 등록
-        http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
-
-        http.authorizeRequests()
-                .antMatchers("/token/refresh")
-                .permitAll();
+        //http.httpBasic().disable(); // 일반적인 루트가 아닌 다른 방식으로 요청시 거절, header에 id, pw가 아닌 token(jwt)을 달고 간다. 그래서 basic이 아닌 bearer를 사용한다.
+        http.httpBasic().disable()
+                .authorizeRequests()// 요청에 대한 사용권한 체크
+                .antMatchers("/test").permitAll()
+                .antMatchers("/api/board").authenticated()
+                .antMatchers("/**").permitAll()
+                .and()
+                .addFilterBefore(new JwtAuthenticationFilter(jwtProvider),
+                        UsernamePasswordAuthenticationFilter.class); // JwtAuthenticationFilter를 UsernamePasswordAuthenticationFilter 전에 넣는다
+        // + 토큰에 저장된 유저정보를 활용하여야 하기 때문에 CustomUserDetailService 클래스를 생성합니다.
+        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
     }
 }

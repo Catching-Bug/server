@@ -1,42 +1,33 @@
 package com.catchbug.server.login;
 
-import com.catchbug.server.jwt.filter.JwtAuthenticateFilter;
-import com.catchbug.server.jwt.handler.JwtAuthenticationFailureHandler;
-import com.catchbug.server.jwt.provider.JwtAuthenticationProvider;
+import com.catchbug.server.jwt.util.JwtProvider;
 import com.catchbug.server.login.dto.DtoOfLoginSuccess;
 import com.catchbug.server.member.Gender;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-
-import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
+
+@MockBean(JpaMetamodelMappingContext.class)
 @WebMvcTest(controllers = LoginController.class)
 public class LoginControllerTest {
 
     @MockBean
-    private JwtAuthenticateFilter jwtAuthenticateFilter;
-
-    @MockBean
-    private JwtAuthenticationFailureHandler jwtAuthenticationFailureHandler;
+    private JwtProvider jwtProvider;
 
     @MockBean
     private LoginService loginService;
-
-    @MockBean
-    private JwtAuthenticationProvider jwtAuthenticationProvider;
 
     @Autowired
     private MockMvc mockMvc;

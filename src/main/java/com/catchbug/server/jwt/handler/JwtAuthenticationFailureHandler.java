@@ -5,7 +5,6 @@ import com.catchbug.server.jwt.exception.ExpiredJwtException;
 import com.catchbug.server.jwt.exception.ModulatedJwtException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -13,19 +12,28 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.stereotype.Component;
-
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+/**
+ * <h1>JwtAuthenticationFailureHandler</h1>
+ * <p>
+ *     Handler for Jwt verify Exception
+ * </p>
+ * <p>
+ *     JWT 예외 핸들러 클래스
+ * </p>
+ *
+ * @see com.catchbug.server.jwt.filter.JwtAuthenticationFilter
+ * @author younghoCha
+ */
 @RequiredArgsConstructor
 @Component
 public class JwtAuthenticationFailureHandler implements AuthenticationFailureHandler {
-
-
-
+    
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
         SecurityContextHolder.clearContext();

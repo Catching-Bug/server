@@ -1,5 +1,9 @@
 package com.catchbug.server.member;
 
+import com.catchbug.server.location.Location;
+import com.catchbug.server.member.dto.DtoOfGetLocation;
+import com.catchbug.server.member.dto.DtoOfGetMember;
+import com.catchbug.server.member.exception.NotFoundMemberException;
 import com.catchbug.server.oauth2.dto.DtoOfUserProfile;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
@@ -9,11 +13,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
+import static com.catchbug.server.jwt.util.JwtFactoryTest.setUpMember;
 import static com.catchbug.server.oauth2.Oauth2UtilTest.setUpSampleProfile;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.when;
 
 
@@ -26,6 +34,9 @@ public class MemberServiceTest {
 
     @Autowired
     private MemberService memberService;
+
+    @MockBean
+    private Member memberEntity;
 
     @DisplayName("최초로그인 상황에서 최초로그인인지 판단한다.")
     @Test
@@ -109,6 +120,138 @@ public class MemberServiceTest {
         Assertions.assertEquals(Gender.MALE, actualMember.getGender());
 
     }
+
+    @DisplayName("getMember 호출 시, 파라미터 id를 가지고 있는 memberEntity가 리턴되어야 한다.")
+    @Test
+    public void getMember_test_OnSuccess() throws Exception{
+
+        //given
+        Member expectedMember = setUpMember();
+
+        //when & mocking
+        given(memberRepository.findById(expectedMember.getId())).willReturn(Optional.of(expectedMember));
+
+        Member actualMember = memberService.getMember(expectedMember.getId());
+        //then
+
+        Assertions.assertEquals(expectedMember.getId(), actualMember.getId());
+        Assertions.assertEquals(expectedMember.getGender(), actualMember.getGender());
+        Assertions.assertEquals(expectedMember.getNickname(), actualMember.getNickname());
+
+
+
+    }
+
+    @DisplayName("멤버가 설정한 위치가 null 로 조회된다.")
+    @Test
+    public void get_member_location_OnNull() throws Exception{
+
+        Member member = setUpMember();
+        //given
+        //mocking
+        given(memberRepository.findById(anyLong())).willReturn(Optional.of(member));
+        //when
+        List<DtoOfGetLocation> locationList = memberService.getMemberLocation(member.getId());
+
+
+        //then
+        Assertions.assertNull(locationList);
+
+    }
+
+    @DisplayName("멤버가 설정한 위치가 정상적으로 조회된다.")
+    @Test
+    public void get_member_location_OnNotNull() throws Exception{
+
+        //given
+        Location location = Location.builder()
+                .id(1L)
+                .locationName("locationName")
+                .town("town")
+                .region("region")
+                .city("city")
+                .detailLocation("detailLocation")
+                .latitude(123123.123123)
+                .longitude(321321.321321)
+                .member(memberEntity)
+                .locationName("locationName")
+                .build();
+
+        List<Location> expectedLocationList = new ArrayList<>();
+
+        expectedLocationList.add(location);
+        given(memberEntity.getLocations()).willReturn(expectedLocationList);
+        given(memberEntity.getId()).willReturn(1L);
+        given(memberRepository.findById(anyLong())).willReturn(Optional.of(memberEntity));
+
+        //when
+        List<DtoOfGetLocation> actualLocationList = memberService.getMemberLocation(1L);
+
+        //then
+        Assertions.assertNotNull(actualLocationList);
+        Assertions.assertEquals(expectedLocationList.size(), actualLocationList.size());
+        Assertions.assertEquals(expectedLocationList.get(0).getDetailLocation(), actualLocationList.get(0).getDetailLocation());
+        Assertions.assertEquals(expectedLocationList.get(0).getLocationName(), actualLocationList.get(0).getLocationName());
+        Assertions.assertEquals(expectedLocationList.get(0).getCity(), actualLocationList.get(0).getCity());
+        Assertions.assertEquals(expectedLocationList.get(0).getLatitude(), actualLocationList.get(0).getLatitude());
+        Assertions.assertEquals(expectedLocationList.get(0).getLongitude(), actualLocationList.get(0).getLongitude());
+        Assertions.assertEquals(expectedLocationList.get(0).getRegion(), actualLocationList.get(0).getRegion());
+        Assertions.assertEquals(expectedLocationList.get(0).getTown(), actualLocationList.get(0).getTown());
+
+    }
+
+
+    @DisplayName("회원 1명을 조회한다.")
+    @Test
+    public void get_Member_OnSuccess() throws Exception{
+
+        //given
+        Member member = setUpMember();
+        given(memberRepository.findById(anyLong())).willReturn(Optional.of(member));
+
+        //when
+        DtoOfGetMember actualResult = memberService.getMemberInformation(1L);
+
+        //then
+        Assertions.assertEquals(member.getNickname(), actualResult.getNickname());
+        Assertions.assertEquals(member.getGender(), actualResult.getGender());
+
+    }
+    @DisplayName("Member 데이터를 찾을 수 없을 시, NotFoundMemberException 발생")
+    @Test
+    public void get_member_OnNotFoundMemberException() throws Exception{
+
+        //given
+        //mocking
+        given(memberRepository.findById(anyLong())).willReturn(Optional.ofNullable(null));
+
+        //when
+        //then
+        Assertions.assertThrows(NotFoundMemberException.class, ()-> {
+            memberService.getMember(1L);
+        });
+
+    }
+
+    
+    @DisplayName("회원 정보 조회 시, 회원 데이터를 찾을 수 없을 경우 NotFoundMemberException 발생")
+    @Test
+    public void get_memberInformation_OnNotFoundMemberException() throws Exception{
+    
+        //given
+        given(memberRepository.findById(anyLong())).willReturn(Optional.ofNullable(null));
+
+        //when
+        //then
+        Assertions.assertThrows(NotFoundMemberException.class, () -> {
+            memberService.getMemberInformation(1L);
+        });
+    }
+
+    
+
+
+
 
 
 

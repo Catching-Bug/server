@@ -18,7 +18,18 @@ import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
-
+/**
+ * <h1>LoginService</h1>
+ * <p>
+ *     Login Business Logic Object
+ * </p>
+ * <p>
+ *     로그인에 대한 비즈니스 로직 클래스
+ * </p>
+ *
+ * @see com.catchbug.server.login.LoginController
+ * @author younghoCha
+ */
 @RequiredArgsConstructor
 @Service
 public class LoginService {
@@ -32,6 +43,12 @@ public class LoginService {
     @Autowired
     private final Oauth2Util oauth2Util;
 
+    /**
+     * 사용자 로그인 Method
+     * @param authorizationCode : Oauth2 로 부터 발급받은 Authorization Code
+     * @return 로그인 성공 후 응답될 Response
+     * @throws JsonProcessingException
+     */
     public DtoOfLoginSuccess login(String authorizationCode) throws JsonProcessingException {
 
         DtoOfOauthTokenResponse oauthTokenResponse = oauth2Util.getToken(authorizationCode);
@@ -39,10 +56,12 @@ public class LoginService {
         Member memberEntity = memberService.login(userProfile);
         DtoOfJwt dtoOfJwt = jwtService.createTokenDto(memberEntity);
         DtoOfLoginSuccess dtoOfLoginSuccess = DtoOfLoginSuccess.builder()
+                .id(memberEntity.getId())
                 .nickname(memberEntity.getNickname())
                 .accessToken(dtoOfJwt.getAccessToken())
                 .refreshToken(dtoOfJwt.getRefreshToken())
                 .gender(memberEntity.getGender())
+
                 .build();
 
         return dtoOfLoginSuccess;
